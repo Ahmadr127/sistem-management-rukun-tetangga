@@ -63,6 +63,98 @@ return [
         ],
     ],
     [
+        'title' => 'Kependudukan',
+        'menus' => [
+            [
+                'label' => 'Data Warga',
+                'icon' => 'bi-people-fill',
+                'route' => 'warga.index',
+                'route_pattern' => 'warga.*',
+                'permission' => 'view_warga',
+            ],
+            [
+                'label' => 'Kartu Keluarga',
+                'icon' => 'bi-house-heart-fill',
+                'route' => 'kartu-keluarga.index',
+                'route_pattern' => 'kartu-keluarga.*',
+                'permission' => 'view_kk',
+            ],
+            [
+                'label' => 'Mutasi Warga',
+                'icon' => 'bi-arrow-left-right',
+                'route' => 'mutasi-warga.index',
+                'route_pattern' => 'mutasi-warga.*',
+                'permission' => 'view_mutasi',
+            ],
+        ],
+    ],
+    [
+        'title' => 'Keuangan',
+        'menus' => [
+            [
+                'label' => 'Keuangan',
+                'icon' => 'bi-cash-coin',
+                'permissions' => ['view_keuangan', 'view_laporan_keuangan'],
+                'children' => [
+                    [
+                        'label' => 'Pemasukan',
+                        'icon' => 'bi-arrow-down-circle-fill',
+                        'route' => 'keuangan.pemasukan.index',
+                        'route_pattern' => 'keuangan.pemasukan.*',
+                        'permission' => 'view_keuangan',
+                    ],
+                    [
+                        'label' => 'Pengeluaran',
+                        'icon' => 'bi-arrow-up-circle-fill',
+                        'route' => 'keuangan.pengeluaran.index',
+                        'route_pattern' => 'keuangan.pengeluaran.*',
+                        'permission' => 'view_keuangan',
+                    ],
+                    [
+                        'label' => 'Laporan Keuangan',
+                        'icon' => 'bi-graph-up',
+                        'route' => 'keuangan.laporan',
+                        'route_pattern' => 'keuangan.laporan',
+                        'permission' => 'view_laporan_keuangan',
+                    ],
+                ],
+            ],
+        ],
+    ],
+    [
+        'title' => 'Inventaris',
+        'menus' => [
+            [
+                'label' => 'Inventaris',
+                'icon' => 'bi-box-seam-fill',
+                'permissions' => ['view_inventaris', 'view_peminjaman', 'view_laporan_inventaris'],
+                'children' => [
+                    [
+                        'label' => 'Data Barang',
+                        'icon' => 'bi-box-seam',
+                        'route' => 'inventaris.index',
+                        'route_pattern' => 'inventaris.*',
+                        'permission' => 'view_inventaris',
+                    ],
+                    [
+                        'label' => 'Peminjaman',
+                        'icon' => 'bi-box-arrow-right',
+                        'route' => 'peminjaman-inventaris.index',
+                        'route_pattern' => 'peminjaman-inventaris.*',
+                        'permission' => 'view_peminjaman',
+                    ],
+                    [
+                        'label' => 'Laporan Inventaris',
+                        'icon' => 'bi-clipboard-data-fill',
+                        'route' => 'inventaris.laporan',
+                        'route_pattern' => 'inventaris.laporan',
+                        'permission' => 'view_laporan_inventaris',
+                    ],
+                ],
+            ],
+        ],
+    ],
+    [
         'title' => 'Organisasi',
         'menus' => [
             [

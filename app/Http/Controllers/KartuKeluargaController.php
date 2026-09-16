@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Requests\KartuKeluarga\Store;
+use App\Http\Requests\KartuKeluarga\Update;
+use App\Http\Services\KartuKeluargaService;
+use App\Models\KartuKeluarga;
+use Illuminate\Http\Request;
+
+class KartuKeluargaController extends Controller
+{
+    public function __construct(protected KartuKeluargaService $kkService) {}
+
+    public function index(Request $request)
+    {
+        $kk = $this->kkService->getKK($request->only(['search','rt','rw','date_from','date_to','per_page']));
+        return view('kartu-keluarga.index', compact('kk'));
+    }
+
+    public function create()
+    {
+        return view('kartu-keluarga.create');
+    }
+
+    public function store(Store $request)
+    {
+        $this->kkService->createKK($request->validated());
+        return redirect()->route('kartu-keluarga.index')->with('success', 'Kartu Keluarga berhasil ditambahkan!');
+    }
+
+    public function show(KartuKeluarga $kartuKeluarga)
+    {
+        $kartuKeluarga->load(['warga']);
+        return view('kartu-keluarga.show', compact('kartuKeluarga'));
+    }
+
+    public function edit(KartuKeluarga $kartuKeluarga)
+    {
+        return view('kartu-keluarga.edit', compact('kartuKeluarga'));
+    }
+
+    public function update(Update $request, KartuKeluarga $kartuKeluarga)
+    {
+        $this->kkService->updateKK($kartuKeluarga, $request->validated());
+        return redirect()->route('kartu-keluarga.index')->with('success', 'Kartu Keluarga berhasil diperbarui!');
+    }
+
+    public function destroy(KartuKeluarga $kartuKeluarga)
+    {
+        $result = $this->kkService->deleteKK($kartuKeluarga);
+        if (isset($result['success']) && $result['success'] === false) {
+            return redirect()->route('kartu-keluarga.index')->with('error', $result['message']);
+        }
+        return redirect()->route('kartu-keluarga.index')->with('success', 'Kartu Keluarga berhasil dihapus!');
+    }
+}

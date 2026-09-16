@@ -1,0 +1,23 @@
+@extends('layouts.app')
+@section('title', 'Edit Pengeluaran')
+@section('content')
+<div class="max-w-2xl mx-auto">
+    <x-card>
+        <x-slot name="title">Edit Pengeluaran</x-slot>
+        <x-slot name="actions"><a href="{{ route('keuangan.pengeluaran.index') }}" class="text-sm px-3 py-1.5 border rounded-md">Kembali</a></x-slot>
+        <form action="{{ route('keuangan.update', $keuangan) }}" method="POST" class="space-y-4">
+            @csrf @method('PUT')
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div><label class="block text-sm font-semibold mb-1">Tanggal *</label><input type="date" name="tanggal" value="{{ old('tanggal',$keuangan->tanggal->format('Y-m-d')) }}" class="w-full px-3 py-2 border rounded-md text-sm" required></div>
+                <div><label class="block text-sm font-semibold mb-1">Jenis *</label><select name="jenis" class="w-full px-3 py-2 border rounded-md text-sm"><option value="PEMASUKAN" {{ old('jenis',$keuangan->jenis)=='PEMASUKAN'?'selected':'' }}>Pemasukan</option><option value="PENGELUARAN" {{ old('jenis',$keuangan->jenis)=='PENGELUARAN'?'selected':'' }}>Pengeluaran</option></select></div>
+                <div><label class="block text-sm font-semibold mb-1">Kategori *</label><input type="text" list="catList" name="kategori" value="{{ old('kategori',$keuangan->kategori) }}" class="w-full px-3 py-2 border rounded-md text-sm" required><datalist id="catList">@foreach($categories as $c)<option value="{{ $c }}">@endforeach</datalist></div>
+                <div><label class="block text-sm font-semibold mb-1">Jumlah *</label><input type="number" name="jumlah" value="{{ old('jumlah',$keuangan->jumlah) }}" class="w-full px-3 py-2 border rounded-md text-sm" required></div>
+                <div><label class="block text-sm font-semibold mb-1">Sumber Dana</label><input type="text" name="sumber_dana" value="{{ old('sumber_dana',$keuangan->sumber_dana) }}" class="w-full px-3 py-2 border rounded-md text-sm"></div>
+                <div><label class="block text-sm font-semibold mb-1">Keterangan</label><input type="text" name="keterangan" value="{{ old('keterangan',$keuangan->keterangan) }}" class="w-full px-3 py-2 border rounded-md text-sm"></div>
+                <div class="md:col-span-2"><label class="block text-sm font-semibold mb-1">Deskripsi</label><textarea name="deskripsi" rows="2" class="w-full px-3 py-2 border rounded-md text-sm">{{ old('deskripsi',$keuangan->deskripsi) }}</textarea></div>
+            </div>
+            <div class="flex justify-end gap-2 pt-4"><a href="{{ route('keuangan.pengeluaran.index') }}" class="px-4 py-2 border rounded-md text-sm">Batal</a><button type="submit" class="px-6 py-2 bg-red-600 text-white rounded-md text-sm font-semibold">Update</button></div>
+        </form>
+    </x-card>
+</div>
+@endsection
