@@ -6,16 +6,36 @@
 ])
 
 {{--
-    Kolom aksi. Jika jumlah aksi hanya 1-2, tampilkan sebagai icon button biasa
-    (tanpa titik tiga); jika 3 atau lebih, gunakan dropdown titik tiga.
-
-    Untuk mode dropdown, state memakai nama unik "menuOpen" agar tidak
-    bertabrakan (scope isolation) dengan variabel "open" milik modal halaman.
+    Kolom aksi. Jika jumlah aksi <=3, tampilkan sebagai icon button biasa;
+    jika >3, gunakan dropdown titik tiga.
+    $count harus di-passing dari parent (jumlah aksi maksimal).
+    Fallback: jika count tidak di-passing (0), otomatis coba hitung dari slot
+    dengan substring count sebagai fallback aman -> anggap <=3 (icon).
 --}}
-@if($count > 0 && $count <= 2)
-    <div class="flex items-center justify-start gap-1.5">
+@php
+    // Auto-count jika tidak diberikan: hitung action-item di slot HTML
+    if ((int)$count === 0) {
+        try {
+            $html = (string) $slot;
+            $auto = substr_count($html, 'action-item');
+            if ($auto > 0) $count = $auto;
+            else $count = 3;
+        } catch (\Throwable $e) {
+            $count = 3;
+        }
+    }
+@endphp
+@if((int)$count <= 3)
+    <div class="flex items-center justify-start gap-1 actions-compact">
         {{ $slot }}
     </div>
+    <style>
+        .actions-compact .action-item { width: 1.75rem; height: 1.75rem; padding: 0; justify-content: center; border-radius: 0.375rem; border: 1px solid #e5e7eb; background: white; gap: 0; }
+        .actions-compact .action-item:hover { background: rgba(0,119,116,0.1); border-color: rgba(0,119,116,0.3); color: #007774; }
+        .actions-compact .action-form .action-item:hover { background: #fef2f2; border-color: #fecaca; color: #dc2626; }
+        .actions-compact .action-label { display: none; }
+        .actions-compact .action-form { display: inline-block; }
+    </style>
 @else
 <div
     x-data="dropdownMenu({ align: '{{ $align }}' })"

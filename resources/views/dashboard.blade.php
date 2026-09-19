@@ -9,7 +9,7 @@
         <h2 class="text-2xl font-bold text-gray-900">Selamat Datang, {{ $user->name }}!</h2>
         <p class="text-gray-500 mb-4">Sistem Manajemen Rukun Tetangga — Kelola Warga, Keuangan & Inventaris</p>
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <!-- <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
             @if($user->hasPermission('view_warga'))
             <a href="{{ route('warga.index') }}" class="flex items-center p-3 bg-sp-primary/5 hover:bg-sp-primary/10 rounded-lg transition-colors group">
                 <div class="w-9 h-9 bg-sp-primary rounded-lg flex items-center justify-center mr-3 text-white flex-shrink-0 shadow-sm"><i class="bi bi-people-fill"></i></div>
@@ -72,7 +72,7 @@
                 <div><div class="font-semibold text-sp-navy">Laporan Inventaris</div><div class="text-xs text-teal-600">Rekap barang</div></div>
             </a>
             @endif
-        </div>
+        </div> -->
     </x-card>
 
      <!-- Stats -->

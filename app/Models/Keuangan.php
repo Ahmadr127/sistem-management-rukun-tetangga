@@ -23,6 +23,7 @@ class Keuangan extends Model
         'deskripsi',
         'bukti',
         'created_by',
+        'rt_id',
     ];
 
     protected $casts = [
@@ -35,6 +36,20 @@ class Keuangan extends Model
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function rt(): BelongsTo
+    {
+        return $this->belongsTo(Rt::class, 'rt_id');
+    }
+
+    public function scopeForUser($query, $user = null)
+    {
+        $user = $user ?? auth()->user();
+        if ($user && !$user->isSuperAdmin() && $user->rt_id) {
+            return $query->where('rt_id', $user->rt_id);
+        }
+        return $query;
     }
 
     public function scopePemasukan($query)

@@ -21,7 +21,7 @@
 
         <x-table-filter search-placeholder="Cari nama, username, atau email..." />
 
-        <x-table :columns="['Nama', 'NIK', 'Username', 'Email', 'Role', 'Tanggal Dibuat', 'Aksi']" :pagination="$users" class="border-0 rounded-none shadow-none">
+        <x-table :columns="['Nama', 'NIK', 'Username', 'Email', 'Role', 'RT', 'Tanggal Dibuat', 'Aksi']" :pagination="$users" class="border-0 rounded-none shadow-none">
             @foreach($users as $user)
             <tr class="hover:bg-gray-50 transition-colors">
                 <td class="px-4 py-3 whitespace-nowrap">
@@ -38,8 +38,8 @@
                 <td class="px-4 py-3 whitespace-nowrap">
                     @if($user->role)
                     <span class="inline-flex px-2 py-0.5 text-xs font-semibold rounded-full
-                        @if($user->role->name === 'admin') bg-red-100 text-red-800
-                        @elseif($user->role->name === 'librarian') bg-blue-100 text-blue-800
+                        @if($user->role->name === 'admin' || $user->role->name === 'superadmin') bg-red-100 text-red-800
+                        @elseif($user->role->name === 'rt') bg-teal-100 text-teal-800
                         @else bg-green-100 text-green-800 @endif">
                         {{ $user->role->display_name }}
                     </span>
@@ -47,6 +47,7 @@
                     <span class="text-sm text-gray-500">Tidak ada role</span>
                     @endif
                 </td>
+                <td class="px-4 py-3 whitespace-nowrap text-sm">@if($user->rt)<span class="px-2 py-0.5 text-xs bg-teal-100 text-teal-800 rounded-full">{{ $user->rt->kode_rt }}</span>@else<span class="text-xs text-gray-500">Superadmin</span>@endif</td>
                 <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{{ $user->created_at->format('d/m/Y H:i') }}</td>
                 <td class="px-4 py-3 whitespace-nowrap">
                     <x-actions>

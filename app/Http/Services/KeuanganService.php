@@ -12,7 +12,14 @@ class KeuanganService
 
     public function getKeuangan(array $filters = [], string $jenis = null)
     {
-        $query = Keuangan::with('creator');
+        $query = Keuangan::with(['creator','rt']);
+        if ($user = auth()->user()) {
+            if (!$user->isSuperAdmin() && $user->rt_id) {
+                $query->where('rt_id', $user->rt_id);
+            } elseif (!empty($filters['rt_id'])) {
+                $query->where('rt_id', $filters['rt_id']);
+            }
+        }
 
         if ($jenis) {
             $query->where('jenis', $jenis);
@@ -46,6 +53,11 @@ class KeuanganService
     public function createKeuangan(array $data)
     {
         $data['created_by'] = Auth::id();
+        $user = Auth::user();
+        if ($user && !$user->isSuperAdmin() && $user->rt_id) {
+            $data['rt_id'] = $user->rt_id;
+        }
+        if ($user && !$user->isSuperAdmin() && isset($data['rt_id']) && (int)$data['rt_id'] !== (int)$user->rt_id) abort(403,'Tidak dapat membuat keuangan RT lain.');
         $keuangan = Keuangan::create($data);
         $this->activityLogger->log($keuangan, 'created', $keuangan->toArray(), ucfirst(strtolower($keuangan->jenis)) . " {$keuangan->kategori} Rp ".number_format((float)$keuangan->jumlah,0,',','.'));
         return $keuangan;
@@ -53,6 +65,9 @@ class KeuanganService
 
     public function updateKeuangan(Keuangan $keuangan, array $data)
     {
+        $user = Auth::user();
+        if ($user && !$user->isSuperAdmin() && $user->rt_id && (int)$keuangan->rt_id !== (int)$user->rt_id) abort(403,'Akses keuangan ditolak.');
+        if ($user && !$user->isSuperAdmin() && isset($data['rt_id']) && (int)$data['rt_id'] !== (int)$user->rt_id) abort(403,'Tidak dapat pindah keuangan ke RT lain.');
         $oldData = $keuangan->toArray();
         $keuangan->update($data);
         $keuangan->refresh();
@@ -63,6 +78,8 @@ class KeuanganService
 
     public function deleteKeuangan(Keuangan $keuangan)
     {
+        $user = Auth::user();
+        if ($user && !$user->isSuperAdmin() && $user->rt_id && (int)$keuangan->rt_id !== (int)$user->rt_id) abort(403,'Akses keuangan ditolak.');
         $keuangan->loadMissing('creator');
         $this->activityLogger->logDeleted($keuangan);
         return $keuangan->delete();

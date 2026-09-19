@@ -4,9 +4,21 @@
     'actions' => null,
     'footer' => null,
     'padding' => true,
+    'accent' => null,
 ])
 
-<div {{ $attributes->merge(['class' => 'bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden']) }}>
+@php
+    $accentBorder = [
+        'teal' => 'border-t-2 border-t-teal-500',
+        'green' => 'border-t-2 border-t-green-500',
+        'blue' => 'border-t-2 border-t-blue-500',
+        'purple' => 'border-t-2 border-t-purple-500',
+        'amber' => 'border-t-2 border-t-amber-500',
+        'red' => 'border-t-2 border-t-red-500',
+        'indigo' => 'border-t-2 border-t-indigo-500',
+    ][$accent] ?? '';
+@endphp
+<div {{ $attributes->merge(['class' => "bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden $accentBorder"]) }}>
     @if($title || !empty($actions))
         <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
             <div class="min-w-0">

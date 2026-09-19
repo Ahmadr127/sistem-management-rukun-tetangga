@@ -1,0 +1,834 @@
+<!-- Detail Warga (Mobile Refactor) -->
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Detail Warga - Nanih | Kependudukan RT/RW</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "error": "#ba1a1a",
+          "inverse-on-surface": "#eaf1ff",
+          "primary": "#00685f",
+          "surface-container-highest": "#d3e4fe",
+          "surface-container-low": "#eff4ff",
+          "surface-variant": "#d3e4fe",
+          "on-error": "#ffffff",
+          "on-secondary-container": "#684000",
+          "outline-variant": "#bcc9c6",
+          "surface-bright": "#f8f9ff",
+          "primary-container": "#008378",
+          "on-surface-variant": "#3d4947",
+          "secondary": "#855300",
+          "on-primary-fixed": "#00201d",
+          "secondary-fixed-dim": "#ffb95f",
+          "surface-dim": "#cbdbf5",
+          "secondary-container": "#fea619",
+          "on-primary": "#ffffff",
+          "on-tertiary": "#ffffff",
+          "primary-fixed-dim": "#6bd8cb",
+          "inverse-surface": "#213145",
+          "error-container": "#ffdad6",
+          "secondary-fixed": "#ffddb8",
+          "on-surface": "#0b1c30",
+          "surface-container": "#e5eeff",
+          "tertiary-container": "#007bb9",
+          "on-secondary": "#ffffff",
+          "surface-container-high": "#dce9ff",
+          "on-tertiary-fixed": "#001d31",
+          "on-tertiary-container": "#fdfcff",
+          "surface-tint": "#006a61",
+          "on-secondary-fixed-variant": "#653e00",
+          "on-secondary-fixed": "#2a1700",
+          "surface": "#f8f9ff",
+          "outline": "#6d7a77",
+          "background": "#f8f9ff",
+          "on-primary-container": "#f4fffc",
+          "on-background": "#0b1c30",
+          "on-tertiary-fixed-variant": "#004b73",
+          "on-error-container": "#93000a",
+          "inverse-primary": "#6bd8cb",
+          "on-primary-fixed-variant": "#005049",
+          "primary-fixed": "#89f5e7",
+          "tertiary-fixed-dim": "#93ccff",
+          "tertiary-fixed": "#cce5ff",
+          "surface-container-lowest": "#ffffff",
+          "tertiary": "#006194"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "gutter-mobile": "0.75rem",
+          "margin-mobile": "1rem",
+          "gutter": "1.5rem",
+          "margin": "2rem",
+          "space-xs": "0.25rem",
+          "space-lg": "1.5rem",
+          "space-xl": "2rem",
+          "space-sm": "0.5rem",
+          "space-2xl": "3rem",
+          "space-md": "1rem"
+        },
+        "fontFamily": {
+          "headline-sm": ["Plus Jakarta Sans"],
+          "label-lg": ["Plus Jakarta Sans"],
+          "mono-code": ["JetBrains Mono"],
+          "headline-xl": ["Plus Jakarta Sans"],
+          "headline-lg": ["Plus Jakarta Sans"],
+          "headline-lg-mobile": ["Plus Jakarta Sans"],
+          "body-sm": ["Plus Jakarta Sans"],
+          "body-md": ["Plus Jakarta Sans"],
+          "label-sm": ["Plus Jakarta Sans"],
+          "headline-xl-mobile": ["Plus Jakarta Sans"],
+          "headline-md": ["Plus Jakarta Sans"],
+          "body-lg": ["Plus Jakarta Sans"],
+          "label-md": ["Plus Jakarta Sans"]
+        },
+        "fontSize": {
+          "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+          "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+          "mono-code": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+          "headline-xl": ["36px", { "lineHeight": "44px", "fontWeight": "700" }],
+          "headline-lg": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+          "headline-lg-mobile": ["22px", { "lineHeight": "28px", "fontWeight": "700" }],
+          "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+          "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+          "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+          "headline-xl-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+          "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+          "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+          "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "600" }]
+        }
+      },
+    },
+  }
+</script>
+<style>
+  body {
+    min-height: max(884px, 100dvh);
+  }
+</style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased min-h-screen pb-24">
+<!-- Functional Top App Bar -->
+<header class="sticky top-0 z-40 bg-white border-b border-slate-200">
+<div class="flex justify-between items-center w-full px-4 py-3 max-w-md mx-auto">
+<div class="flex items-center gap-2">
+<button aria-label="Kembali" class="p-1.5 -ml-1.5 rounded-lg text-slate-600 hover:bg-slate-100 active:bg-slate-200 transition-colors flex items-center justify-center" onclick="window.history.back()">
+<span class="material-symbols-outlined text-[22px]">arrow_back</span>
+</button>
+<div>
+<h1 class="font-semibold text-slate-900 text-base leading-tight">Detail Warga</h1>
+<p class="text-xs text-slate-500 font-normal">RT 01 / RW 05</p>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button class="px-3 py-1.5 rounded-md border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-50 active:bg-slate-100 transition-colors flex items-center gap-1" onclick="toggleEditToast()">
+<span class="material-symbols-outlined text-[16px] text-slate-500">edit</span>
+<span>Edit</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Container -->
+<main class="max-w-md mx-auto px-4 pt-4 space-y-4">
+<!-- Clean Profile Summary Header (Non-slop, functional) -->
+<section class="bg-white border border-slate-200 rounded-lg p-4">
+<div class="flex items-center gap-3.5">
+<!-- Standard neutral avatar box -->
+<div class="w-14 h-14 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 font-bold text-xl shrink-0">
+        N
+      </div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2">
+<h2 class="text-lg font-bold text-slate-900 truncate">Nanih</h2>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+            Aktif
+          </span>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+            Istri
+          </span>
+</div>
+<div class="flex items-center gap-1.5 mt-1 text-slate-600">
+<span class="text-xs text-slate-500 font-medium">NIK:</span>
+<span class="font-mono text-xs font-semibold text-slate-800 tracking-wide" id="nikText">2222222222222222</span>
+<button class="p-1 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100 active:bg-slate-200 transition-colors" onclick="copyToClipboard('2222222222222222', 'NIK disalin')" title="Salin NIK">
+<span class="material-symbols-outlined text-[15px]">content_copy</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Quick Compact Action Row -->
+<div class="grid grid-cols-2 gap-2 mt-3.5 pt-3 border-t border-slate-100">
+<a class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-md border border-slate-200 bg-slate-50 text-slate-700 text-xs font-semibold hover:bg-slate-100 active:bg-slate-200 transition-colors" href="https://wa.me/62895711580060" target="_blank">
+<span class="material-symbols-outlined text-[16px] text-emerald-600">chat</span>
+<span>Hubungi WhatsApp</span>
+</a>
+<button class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-md border border-slate-200 bg-slate-50 text-slate-700 text-xs font-semibold hover:bg-slate-100 active:bg-slate-200 transition-colors" onclick="switchTab('keluarga')">
+<span class="material-symbols-outlined text-[16px] text-slate-600">folder_shared</span>
+<span>Lihat Kartu Keluarga</span>
+</button>
+</div>
+</section>
+<!-- Neutral Segmented Underline Tabs -->
+<div class="flex border-b border-slate-200 bg-white px-2 rounded-t-lg">
+<button class="flex-1 py-2.5 text-xs font-semibold border-b-2 border-primary text-primary transition-colors text-center" id="tabBtnPribadi" onclick="switchTab('pribadi')">
+      Data Pribadi
+    </button>
+<button class="flex-1 py-2.5 text-xs font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors text-center" id="tabBtnDomisili" onclick="switchTab('domisili')">
+      Domisili
+    </button>
+<button class="flex-1 py-2.5 text-xs font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors text-center" id="tabBtnKeluarga" onclick="switchTab('keluarga')">
+      Keluarga
+    </button>
+</div>
+<!-- TAB 1: DATA PRIBADI (Definition List standard administrative UI) -->
+<section class="bg-white border border-slate-200 rounded-b-lg -mt-4 divide-y divide-slate-100 text-xs" id="panePribadi">
+<div class="py-3 px-4 flex justify-between items-center">
+<span class="text-slate-500 font-normal">NIK</span>
+<div class="flex items-center gap-1.5">
+<span class="font-mono font-semibold text-slate-900">2222222222222222</span>
+<button class="text-slate-400 hover:text-slate-700" onclick="copyToClipboard('2222222222222222', 'NIK disalin')">
+<span class="material-symbols-outlined text-[14px]">content_copy</span>
+</button>
+</div>
+</div>
+<div class="py-3 px-4 flex justify-between items-center">
+<span class="text-slate-500 font-normal">Tempat, Tgl Lahir</span>
+<span class="font-semibold text-slate-900">Bogor, 09/09/2026</span>
+</div>
+<div class="py-3 px-4 flex justify-between items-center">
+<span class="text-slate-500 font-normal">Jenis Kelamin</span>
+<span class="font-semibold text-slate-900">Perempuan</span>
+</div>
+<div class="py-3 px-4 flex justify-between items-center">
+<span class="text-slate-500 font-normal">Agama</span>
+<span class="font-semibold text-slate-900">Islam</span>
+</div>
+<div class="py-3 px-4 flex justify-between items-center">
+<span class="text-slate-500 font-normal">Pendidikan Terakhir</span>
+<span class="font-semibold text-slate-900">SMP</span>
+</div>
+<div class="py-3 px-4 flex justify-between items-center">
+<span class="text-slate-500 font-normal">Pekerjaan</span>
+<span class="font-semibold text-slate-900">Mengurus Rumah Tangga / Tidak Bekerja</span>
+</div>
+<div class="py-3 px-4 flex justify-between items-center">
+<span class="text-slate-500 font-normal">Status Perkawinan</span>
+<span class="font-semibold text-slate-900">Kawin</span>
+</div>
+<div class="py-3 px-4 flex justify-between items-center">
+<span class="text-slate-500 font-normal">Status Hubungan</span>
+<span class="font-semibold text-slate-900">Istri</span>
+</div>
+<div class="py-3 px-4 flex justify-between items-center">
+<span class="text-slate-500 font-normal">No. KK Terkait</span>
+<div class="flex items-center gap-1.5">
+<span class="font-mono font-semibold text-slate-900">1212121212123212</span>
+<span class="text-slate-500">(Ujang)</span>
+</div>
+</div>
+<div class="py-3 px-4 flex justify-between items-center">
+<span class="text-slate-500 font-normal">No. Telepon / WA</span>
+<div class="flex items-center gap-2">
+<span class="font-mono font-semibold text-slate-900">0895711580060</span>
+<a class="text-primary hover:underline font-semibold" href="tel:0895711580060">Panggil</a>
+</div>
+</div>
+</section>
+<!-- TAB 2: DOMISILI -->
+<section class="bg-white border border-slate-200 rounded-b-lg -mt-4 divide-y divide-slate-100 text-xs hidden" id="paneDomisili">
+<div class="py-3 px-4 flex justify-between items-center">
+<span class="text-slate-500 font-normal">Wilayah Rukun Tetangga</span>
+<span class="font-semibold text-slate-900">RT 01 / RW 05</span>
+</div>
+<div class="py-3 px-4 flex flex-col gap-1">
+<span class="text-slate-500 font-normal">Alamat Domisili Saat Ini</span>
+<span class="font-semibold text-slate-900 text-sm">Jl. Raya Bogor</span>
+<span class="text-slate-500 text-[11px]">Sukamaju, Bogor Timur, Kota Bogor, Jawa Barat 16143</span>
+</div>
+<div class="py-3 px-4 flex flex-col gap-1">
+<span class="text-slate-500 font-normal">Alamat KTP / KK Asal</span>
+<span class="font-semibold text-slate-900 text-sm">Jl. Pendidikan, Sukamaju</span>
+<span class="text-slate-500 text-[11px]">RT 01 / RW 05 (Sesuai wilayah kependudukan RT)</span>
+</div>
+<div class="py-3 px-4 flex justify-between items-center">
+<span class="text-slate-500 font-normal">Status Tempat Tinggal</span>
+<span class="font-semibold text-slate-900">Milik Sendiri / Keluarga</span>
+</div>
+</section>
+<!-- TAB 3: KELUARGA -->
+<section class="bg-white border border-slate-200 rounded-b-lg -mt-4 divide-y divide-slate-100 text-xs hidden" id="paneKeluarga">
+<div class="py-3 px-4 flex justify-between items-center">
+<span class="text-slate-500 font-normal">Nomor Kartu Keluarga</span>
+<div class="flex items-center gap-1.5">
+<span class="font-mono font-semibold text-slate-900">1212121212123212</span>
+<button class="text-slate-400 hover:text-slate-700" onclick="copyToClipboard('1212121212123212', 'No KK disalin')">
+<span class="material-symbols-outlined text-[14px]">content_copy</span>
+</button>
+</div>
+</div>
+<div class="py-3 px-4 flex justify-between items-center">
+<span class="text-slate-500 font-normal">Kepala Keluarga</span>
+<span class="font-semibold text-slate-900">Ujang</span>
+</div>
+<div class="py-3 px-4 flex justify-between items-center">
+<span class="text-slate-500 font-normal">Kedudukan Warga</span>
+<span class="font-semibold text-slate-900">Istri</span>
+</div>
+<div class="p-4 bg-slate-50">
+<p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2">Anggota Keluarga Terdaftar (2 Jiwa)</p>
+<div class="space-y-1.5">
+<div class="p-2.5 rounded border border-slate-200 bg-white flex justify-between items-center">
+<div>
+<p class="font-semibold text-slate-900">Ujang</p>
+<p class="text-[11px] text-slate-500">Kepala Keluarga</p>
+</div>
+<span class="text-[11px] text-slate-400 font-mono">3271xxxxxxxxxxxx</span>
+</div>
+<div class="p-2.5 rounded border border-slate-200 bg-white flex justify-between items-center">
+<div>
+<p class="font-semibold text-slate-900">Nanih <span class="text-primary text-[11px] font-normal">(Data ini)</span></p>
+<p class="text-[11px] text-slate-500">Istri</p>
+</div>
+<span class="text-[11px] text-slate-400 font-mono">2222222222222222</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Service Action Bar (Clear single standard primary button) -->
+<section class="bg-white border border-slate-200 rounded-lg p-3.5 flex items-center justify-between gap-3">
+<div>
+<h3 class="text-xs font-bold text-slate-900 leading-none">Administrasi RT</h3>
+<p class="text-[11px] text-slate-500 mt-1">Cetak pengantar KTP, SKCK, atau surat pindah</p>
+</div>
+<button class="px-3.5 py-2 rounded-md bg-primary hover:bg-primary-container text-white text-xs font-semibold flex items-center gap-1.5 transition-colors shrink-0" onclick="alert('Membuka pembuatan surat pengantar untuk: Nanih')">
+<span class="material-symbols-outlined text-[16px]">description</span>
+<span>Buat Surat Pengantar</span>
+</button>
+</section>
+</main>
+<!-- Bottom Navigation Bar (Functional admin style) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-1.5 bg-white border-t border-slate-200 shadow-sm">
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-800 transition-colors py-1 px-3" href="#">
+<span class="material-symbols-outlined text-[20px]">home</span>
+<span class="text-[11px] mt-0.5 font-medium">Beranda</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-800 transition-colors py-1 px-3" href="#">
+<span class="material-symbols-outlined text-[20px]">badge</span>
+<span class="text-[11px] mt-0.5 font-medium">Data KK</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-semibold py-1 px-3" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">groups</span>
+<span class="text-[11px] mt-0.5">Warga</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-slate-800 transition-colors py-1 px-3" href="#">
+<span class="material-symbols-outlined text-[20px]">description</span>
+<span class="text-[11px] mt-0.5 font-medium">Layanan</span>
+</a>
+</nav>
+<!-- Toast Feedback -->
+<div class="fixed top-14 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-3.5 py-1.5 rounded-md text-xs font-medium shadow-md flex items-center gap-1.5 opacity-0 pointer-events-none transition-opacity duration-150" id="toastNotification">
+<span class="material-symbols-outlined text-emerald-400 text-[16px]">check</span>
+<span id="toastMessage">Teks disalin</span>
+</div>
+<script>
+  function switchTab(tab) {
+    const panePribadi = document.getElementById('panePribadi');
+    const paneDomisili = document.getElementById('paneDomisili');
+    const paneKeluarga = document.getElementById('paneKeluarga');
+
+    const tabBtnPribadi = document.getElementById('tabBtnPribadi');
+    const tabBtnDomisili = document.getElementById('tabBtnDomisili');
+    const tabBtnKeluarga = document.getElementById('tabBtnKeluarga');
+
+    const inactiveClass = "flex-1 py-2.5 text-xs font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition-colors text-center";
+    const activeClass = "flex-1 py-2.5 text-xs font-semibold border-b-2 border-primary text-primary transition-colors text-center";
+
+    [tabBtnPribadi, tabBtnDomisili, tabBtnKeluarga].forEach(btn => {
+      btn.className = inactiveClass;
+    });
+
+    panePribadi.classList.add('hidden');
+    paneDomisili.classList.add('hidden');
+    paneKeluarga.classList.add('hidden');
+
+    if (tab === 'pribadi') {
+      panePribadi.classList.remove('hidden');
+      tabBtnPribadi.className = activeClass;
+    } else if (tab === 'domisili') {
+      paneDomisili.classList.remove('hidden');
+      tabBtnDomisili.className = activeClass;
+    } else if (tab === 'keluarga') {
+      paneKeluarga.classList.remove('hidden');
+      tabBtnKeluarga.className = activeClass;
+    }
+  }
+
+  function copyToClipboard(text, message) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text);
+    } else {
+      const temp = document.createElement('input');
+      temp.value = text;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand('copy');
+      document.body.removeChild(temp);
+    }
+    showToast(message);
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById('toastNotification');
+    const toastMsg = document.getElementById('toastMessage');
+    toastMsg.innerText = msg;
+    toast.classList.remove('opacity-0', 'pointer-events-none');
+    toast.classList.add('opacity-100');
+
+    setTimeout(() => {
+      toast.classList.remove('opacity-100');
+      toast.classList.add('opacity-0', 'pointer-events-none');
+    }, 1800);
+  }
+
+  function toggleEditToast() {
+    showToast('Membuka form pengeditan data...');
+  }
+</script>
+</body></html>
+
+<!-- Portal Administrasi - Detail Kartu Keluarga (Desktop) -->
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kependudukan RT/RW - Detail Kartu Keluarga</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration verbatim -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "error": "#ba1a1a",
+            "inverse-on-surface": "#eaf1ff",
+            "primary": "#00685f",
+            "surface-container-highest": "#d3e4fe",
+            "surface-container-low": "#eff4ff",
+            "surface-variant": "#d3e4fe",
+            "on-error": "#ffffff",
+            "on-secondary-container": "#684000",
+            "outline-variant": "#bcc9c6",
+            "surface-bright": "#f8f9ff",
+            "primary-container": "#008378",
+            "on-surface-variant": "#3d4947",
+            "secondary": "#855300",
+            "on-primary-fixed": "#00201d",
+            "secondary-fixed-dim": "#ffb95f",
+            "surface-dim": "#cbdbf5",
+            "secondary-container": "#fea619",
+            "on-primary": "#ffffff",
+            "on-tertiary": "#ffffff",
+            "primary-fixed-dim": "#6bd8cb",
+            "inverse-surface": "#213145",
+            "error-container": "#ffdad6",
+            "secondary-fixed": "#ffddb8",
+            "on-surface": "#0b1c30",
+            "surface-container": "#e5eeff",
+            "tertiary-container": "#007bb9",
+            "on-secondary": "#ffffff",
+            "surface-container-high": "#dce9ff",
+            "on-tertiary-fixed": "#001d31",
+            "on-tertiary-container": "#fdfcff",
+            "surface-tint": "#006a61",
+            "on-secondary-fixed-variant": "#653e00",
+            "on-secondary-fixed": "#2a1700",
+            "surface": "#f8f9ff",
+            "outline": "#6d7a77",
+            "background": "#f8f9ff",
+            "on-primary-container": "#f4fffc",
+            "on-background": "#0b1c30",
+            "on-tertiary-fixed-variant": "#004b73",
+            "on-error-container": "#93000a",
+            "inverse-primary": "#6bd8cb",
+            "on-primary-fixed-variant": "#005049",
+            "primary-fixed": "#89f5e7",
+            "tertiary-fixed-dim": "#93ccff",
+            "tertiary-fixed": "#cce5ff",
+            "surface-container-lowest": "#ffffff",
+            "tertiary": "#006194"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "gutter-mobile": "0.75rem",
+            "margin-mobile": "1rem",
+            "gutter": "1.5rem",
+            "margin": "2rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "space-xl": "2rem",
+            "space-sm": "0.5rem",
+            "space-2xl": "3rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "headline-sm": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "mono-code": ["JetBrains Mono"],
+            "headline-xl": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "headline-xl-mobile": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "label-lg": ["14px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "mono-code": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "headline-xl": ["36px", { "lineHeight": "44px", "fontWeight": "700" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "headline-xl-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col font-body-md text-body-md">
+<!-- TOP APP BAR (Shared Component: TopAppBar with Web/Desktop cluster) -->
+<header class="bg-surface dark:bg-inverse-surface shadow-sm border-b border-outline-variant/30 dark:border-outline/30 sticky top-0 z-40">
+<div class="max-w-7xl mx-auto flex justify-between items-center px-margin-mobile md:px-margin py-space-sm">
+<!-- Brand & Leading -->
+<div class="flex items-center gap-space-md">
+<button class="flex items-center justify-center p-space-xs rounded hover:bg-surface-container-high transition-colors active:scale-95 text-primary dark:text-inverse-primary" title="Kembali" type="button">
+<span class="material-symbols-outlined text-primary" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="location_city">location_city</span>
+<span class="font-headline-lg-mobile md:font-headline-md text-headline-lg-mobile md:text-headline-md text-primary dark:text-inverse-primary font-bold tracking-tight">Kependudukan RT/RW</span>
+</div>
+</div>
+<!-- Desktop Nav Cluster (Mapped from JSON destinations) -->
+<nav class="hidden md:flex items-center gap-space-lg">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors py-space-xs" href="#">Beranda</a>
+<a class="font-label-md text-label-md text-primary font-semibold border-b-2 border-primary py-space-xs" href="#">Data KK</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors py-space-xs" href="#">Warga</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors py-space-xs" href="#">Layanan</a>
+</nav>
+<!-- Trailing Action & Officer Info -->
+<div class="flex items-center gap-space-md">
+<div class="hidden sm:flex flex-col text-right">
+<span class="font-label-md text-label-md font-semibold text-on-surface">Pak RT Sukamaju</span>
+<span class="font-label-sm text-label-sm text-outline">RW 05 / RT 01</span>
+</div>
+<button class="flex items-center justify-center p-space-xs rounded hover:bg-surface-container-high transition-colors text-on-surface-variant" title="Menu Opsi" type="button">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+</header>
+<!-- MAIN CANVAS -->
+<main class="flex-1 max-w-7xl w-full mx-auto px-margin-mobile md:px-margin py-space-lg pb-24 md:pb-space-xl">
+<!-- BREADCRUMBS -->
+<nav aria-label="Breadcrumb" class="flex items-center gap-space-xs text-on-surface-variant mb-space-md font-label-md text-label-md">
+<a class="hover:text-primary transition-colors" href="#">Beranda</a>
+<span class="material-symbols-outlined text-outline-variant text-sm" data-icon="chevron_right">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Data Kependudukan</a>
+<span class="material-symbols-outlined text-outline-variant text-sm" data-icon="chevron_right">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Kartu Keluarga</a>
+<span class="material-symbols-outlined text-outline-variant text-sm" data-icon="chevron_right">chevron_right</span>
+<span class="font-mono-code text-mono-code text-primary font-semibold">1212121212123212</span>
+</nav>
+<!-- PAGE HEADER BAR -->
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-space-md bg-surface-container-lowest border border-outline-variant/40 rounded-lg p-space-md md:p-space-lg shadow-sm mb-space-lg">
+<div class="space-y-1">
+<div class="flex flex-wrap items-center gap-space-sm">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface tracking-tight">
+            KK <span class="font-mono-code text-primary">1212121212123212</span>
+</h1>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-surface-container-high text-primary border border-outline-variant/30">
+            RT 01 / RW 05
+          </span>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+            Aktif
+          </span>
+</div>
+<p class="font-body-sm text-body-sm text-outline">
+          Kepala Keluarga: <span class="font-semibold text-on-surface">ujang</span> — Terdaftar dalam pembukuan wilayah administrasi Dusun Sukamaju
+        </p>
+</div>
+<!-- Functional Actions Toolbar -->
+<div class="flex flex-wrap items-center gap-space-sm">
+<!-- Neutral Outline (Kembali) -->
+<button class="inline-flex items-center gap-1.5 px-space-md py-2 rounded border border-outline-variant/70 bg-surface-container-lowest text-on-surface hover:bg-surface-container transition-colors active:scale-95 font-label-md text-label-md font-medium" type="button">
+<span class="material-symbols-outlined text-sm" data-icon="arrow_back">arrow_back</span>
+          Kembali
+        </button>
+<!-- Secondary Neutral (Cetak KK) -->
+<button class="inline-flex items-center gap-1.5 px-space-md py-2 rounded border border-outline-variant/70 bg-surface-container-lowest text-on-surface hover:bg-surface-container transition-colors active:scale-95 font-label-md text-label-md font-medium" type="button">
+<span class="material-symbols-outlined text-sm" data-icon="print">print</span>
+          Cetak KK
+        </button>
+<!-- Secondary Amber Action (Edit KK) -->
+<button class="inline-flex items-center gap-1.5 px-space-md py-2 rounded bg-secondary-container text-on-secondary-container hover:bg-amber-500 hover:text-white transition-colors active:scale-95 font-label-md text-label-md font-semibold" type="button">
+<span class="material-symbols-outlined text-sm" data-icon="edit">edit</span>
+          Edit KK
+        </button>
+</div>
+</div>
+<!-- SECTION 1: DATA IDENTITAS & ALAMAT KARTU KELUARGA -->
+<section class="bg-surface-container-lowest border border-outline-variant/40 rounded-lg p-space-md md:p-space-lg shadow-sm mb-space-lg">
+<div class="flex items-center justify-between border-b border-outline-variant/30 pb-space-sm mb-space-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="badge">badge</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Identitas &amp; Wilayah Domisili</h2>
+</div>
+<span class="font-label-sm text-label-sm text-outline">Sumber Data: SIAK / Reguler RT</span>
+</div>
+<!-- Definition Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-space-md gap-x-space-lg mb-space-md">
+<!-- Item -->
+<div>
+<span class="block font-label-sm text-label-sm text-outline uppercase tracking-wider mb-0.5">Nomor Kartu Keluarga</span>
+<span class="font-mono-code text-mono-code font-bold text-on-surface">1212121212123212</span>
+</div>
+<!-- Item -->
+<div>
+<span class="block font-label-sm text-label-sm text-outline uppercase tracking-wider mb-0.5">Kepala Keluarga</span>
+<span class="font-headline-sm text-headline-sm font-semibold text-on-surface">ujang</span>
+</div>
+<!-- Item -->
+<div>
+<span class="block font-label-sm text-label-sm text-outline uppercase tracking-wider mb-0.5">Rukun Tetangga (RT)</span>
+<div class="flex items-center gap-1.5 mt-0.5">
+<span class="inline-block px-2 py-0.5 rounded text-xs font-semibold bg-surface-container-high text-primary border border-outline-variant/40">RT 01</span>
+<span class="font-body-md text-body-md text-on-surface">RT 01</span>
+</div>
+</div>
+<!-- Item -->
+<div>
+<span class="block font-label-sm text-label-sm text-outline uppercase tracking-wider mb-0.5">Rukun Warga (RW)</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">05</span>
+</div>
+</div>
+<!-- Inset: Master Regional Territory Callout (As shown in spec) -->
+<div class="bg-sky-50/60 border border-sky-200 rounded p-space-md mb-space-md">
+<div class="flex items-center gap-1.5 text-sky-800 font-label-sm text-label-sm font-bold uppercase tracking-wider mb-1">
+<span class="material-symbols-outlined text-sm" data-icon="share_location">share_location</span>
+          Alamat Wilayah RT (Master)
+        </div>
+<p class="font-body-md text-body-md text-on-surface font-medium">
+          Jl. Raya Bogor, RW 05, Sukamaju, Bogor Timur, Bogor, Jawa Barat 16143
+        </p>
+</div>
+<!-- Specific Address Attributes (Key-Value Flow) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-space-md gap-x-space-lg pt-space-xs">
+<div>
+<span class="block font-label-sm text-label-sm text-outline uppercase tracking-wider mb-0.5">Alamat Detail</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">Jl. pendidikan</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-outline uppercase tracking-wider mb-0.5">Dusun / Lingkungan</span>
+<span class="font-body-md text-body-md text-outline">-</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-outline uppercase tracking-wider mb-0.5">Desa / Kelurahan</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">Sukamaju</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-outline uppercase tracking-wider mb-0.5">Kecamatan</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">Bogor Timur</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-outline uppercase tracking-wider mb-0.5">Kabupaten / Kota</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">Bogor</span>
+</div>
+<div>
+<span class="block font-label-sm text-label-sm text-outline uppercase tracking-wider mb-0.5">Provinsi &amp; Kode Pos</span>
+<span class="font-body-md text-body-md font-semibold text-on-surface">Jawa Barat <span class="text-outline font-normal">/</span> 16143</span>
+</div>
+</div>
+</section>
+<!-- SECTION 2: TABEL ANGGOTA KELUARGA -->
+<section class="bg-surface-container-lowest border border-outline-variant/40 rounded-lg shadow-sm overflow-hidden">
+<!-- Section Header with Quick Action & Search -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between p-space-md md:p-space-lg border-b border-outline-variant/30 gap-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="groups">groups</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Anggota Keluarga (2)</h2>
+<span class="text-xs px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-medium">2 Jiwa Terdaftar</span>
+</div>
+<div class="flex items-center gap-space-sm">
+<!-- Primary Civic Button (Tambah Anggota) -->
+<button class="inline-flex items-center gap-1.5 px-space-md py-2 rounded bg-primary text-on-primary hover:bg-primary-container transition-colors active:scale-95 font-label-md text-label-md font-semibold shadow-sm" type="button">
+<span class="material-symbols-outlined text-sm" data-icon="person_add">person_add</span>
+            Tambah
+          </button>
+</div>
+</div>
+<!-- High Legibility Administrative Desktop Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container/50 border-b border-outline-variant/30 text-on-surface-variant font-label-md text-label-md">
+<th class="py-3 px-4 font-semibold text-center w-12" scope="col">No</th>
+<th class="py-3 px-4 font-semibold" scope="col">NIK</th>
+<th class="py-3 px-4 font-semibold" scope="col">Nama Lengkap</th>
+<th class="py-3 px-4 font-semibold text-center" scope="col">L/P</th>
+<th class="py-3 px-4 font-semibold" scope="col">Hubungan</th>
+<th class="py-3 px-4 font-semibold" scope="col">Pekerjaan</th>
+<th class="py-3 px-4 font-semibold text-center" scope="col">Status</th>
+<th class="py-3 px-4 font-semibold text-center w-28" scope="col">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20 font-body-md text-body-md text-on-surface">
+<!-- Row 1: Ujang (Kepala Keluarga) -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-4 text-center text-outline font-label-sm">1</td>
+<td class="py-3.5 px-4 font-mono-code text-mono-code font-semibold text-primary">2010150811111111</td>
+<td class="py-3.5 px-4">
+<div class="flex items-center gap-2">
+<span class="font-semibold text-on-surface">ujang</span>
+<!-- Kepala Badge with star glyph -->
+<span class="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+<span class="material-symbols-outlined text-[13px] leading-none text-amber-600" data-icon="star" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+                    Kepala
+                  </span>
+</div>
+<span class="block font-body-sm text-body-sm text-outline">Bogor, 29/12/2025</span>
+</td>
+<td class="py-3.5 px-4 text-center font-medium">L</td>
+<td class="py-3.5 px-4 text-on-surface font-medium">Kepala Keluarga</td>
+<td class="py-3.5 px-4 text-on-surface-variant">nganggur</td>
+<td class="py-3.5 px-4 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+                  Aktif
+                </span>
+</td>
+<td class="py-3.5 px-4 text-center">
+<div class="inline-flex items-center justify-center gap-1">
+<!-- View -->
+<button class="p-1 rounded text-primary hover:bg-surface-container-high transition-colors active:scale-95" title="Lihat Detail" type="button">
+<span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span>
+</button>
+<!-- Edit -->
+<button class="p-1 rounded text-secondary hover:bg-amber-100 transition-colors active:scale-95" title="Ubah Data" type="button">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+</button>
+<!-- Delete -->
+<button class="p-1 rounded text-error hover:bg-error-container transition-colors active:scale-95" title="Hapus Anggota" type="button">
+<span class="material-symbols-outlined text-lg" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2: Nanih (Istri) -->
+<tr class="hover:bg-surface-container-low/60 transition-colors">
+<td class="py-3.5 px-4 text-center text-outline font-label-sm">2</td>
+<td class="py-3.5 px-4 font-mono-code text-mono-code font-semibold text-primary">2222222222222222</td>
+<td class="py-3.5 px-4">
+<span class="font-semibold text-on-surface">nanih</span>
+<span class="block font-body-sm text-body-sm text-outline">Bogor, 09/09/2026</span>
+</td>
+<td class="py-3.5 px-4 text-center font-medium">L</td>
+<td class="py-3.5 px-4 text-on-surface font-medium">Istri</td>
+<td class="py-3.5 px-4 text-on-surface-variant">nganggur</td>
+<td class="py-3.5 px-4 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+                  Aktif
+                </span>
+</td>
+<td class="py-3.5 px-4 text-center">
+<div class="inline-flex items-center justify-center gap-1">
+<!-- View -->
+<button class="p-1 rounded text-primary hover:bg-surface-container-high transition-colors active:scale-95" title="Lihat Detail" type="button">
+<span class="material-symbols-outlined text-lg" data-icon="visibility">visibility</span>
+</button>
+<!-- Edit -->
+<button class="p-1 rounded text-secondary hover:bg-amber-100 transition-colors active:scale-95" title="Ubah Data" type="button">
+<span class="material-symbols-outlined text-lg" data-icon="edit">edit</span>
+</button>
+<!-- Delete -->
+<button class="p-1 rounded text-error hover:bg-error-container transition-colors active:scale-95" title="Hapus Anggota" type="button">
+<span class="material-symbols-outlined text-lg" data-icon="delete">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Administrative Table Footer -->
+<div class="px-space-md py-space-sm bg-surface-container-lowest border-t border-outline-variant/30 flex flex-col sm:flex-row items-center justify-between text-outline font-body-sm text-body-sm gap-2">
+<span>Menampilkan 2 dari 2 anggota keluarga terdata</span>
+<div class="flex items-center gap-2">
+<span class="text-xs">Sinkronisasi RT: Hari ini 08:30 WIB</span>
+</div>
+</div>
+</section>
+</main>
+<!-- BOTTOM NAV BAR (Mobile Only - Shared Component from JSON) -->
+<nav aria-label="Navigasi Bawah Mobile" class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter-mobile py-space-xs bg-surface dark:bg-inverse-surface border-t border-outline-variant/30 dark:border-outline/30 shadow-[0_-2px_10px_rgba(11,28,48,0.05)]">
+<!-- Tab 1: Beranda -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant font-medium hover:text-primary dark:hover:text-inverse-primary transition-colors active:scale-95" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">Beranda</span>
+</a>
+<!-- Tab 2: Data KK (ACTIVE TAB - Exactly matched to KK Detail Screen) -->
+<a class="flex flex-col items-center justify-center text-primary dark:text-inverse-primary font-semibold hover:text-primary dark:hover:text-inverse-primary transition-colors active:scale-95" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="badge">badge</span>
+<span class="font-label-sm text-label-sm">Data KK</span>
+</a>
+<!-- Tab 3: Warga -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant font-medium hover:text-primary dark:hover:text-inverse-primary transition-colors active:scale-95" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="groups">groups</span>
+<span class="font-label-sm text-label-sm">Warga</span>
+</a>
+<!-- Tab 4: Layanan -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant font-medium hover:text-primary dark:hover:text-inverse-primary transition-colors active:scale-95" href="#">
+<span class="material-symbols-outlined text-xl" data-icon="description">description</span>
+<span class="font-label-sm text-label-sm">Layanan</span>
+</a>
+</nav>
+</body></html>

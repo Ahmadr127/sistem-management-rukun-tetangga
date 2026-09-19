@@ -2,7 +2,7 @@
 @section('title', 'Mutasi Warga')
 @section('content')
 <div class="w-full mx-auto">
-    <x-card padding="false">
+    <x-card padding="false" accent="purple">
         <x-slot name="title">Mutasi Warga</x-slot>
         <x-slot name="subtitle">Masuk / Keluar / Kelahiran / Kematian / Pindah KK</x-slot>
         <x-slot name="actions"><a href="{{ route('mutasi-warga.create') }}" class="px-3 py-1.5 bg-sp-primary text-white rounded-md text-sm font-semibold"><i class="bi bi-plus-lg"></i> Catat Mutasi</a></x-slot>
@@ -15,9 +15,10 @@
                 <div class="flex gap-2"><button type="submit" class="px-4 py-1.5 text-sm bg-sp-primary text-white rounded-md">Filter</button><a href="{{ route('mutasi-warga.index') }}" class="px-4 py-1.5 text-sm bg-gray-200 rounded-md">Reset</a></div>
             </form>
         </div>
-        <x-table :columns="['Tanggal','Warga','Jenis','KK Lama','KK Baru','Keterangan','Aksi']" :pagination="$mutasi">
+        <x-table :columns="['No','Tanggal','Warga','Jenis','KK Lama','KK Baru','Keterangan','Aksi']" :pagination="$mutasi" accent="purple">
             @foreach($mutasi as $m)
-            <tr class="hover:bg-gray-50">
+            <tr class="hover:bg-purple-50/40">
+                <td class="px-3 py-2 text-sm">{{ ($mutasi->currentPage()-1)*$mutasi->perPage() + $loop->iteration }}</td>
                 <td class="px-3 py-2 text-sm">{{ $m->tanggal_mutasi->format('d/m/Y') }}</td>
                 <td class="px-3 py-2"><div class="text-sm font-medium">{{ $m->warga->nama ?? '-' }}</div><div class="text-xs text-gray-500 font-mono">{{ $m->warga->nik ?? '-' }}</div></td>
                 <td class="px-3 py-2">

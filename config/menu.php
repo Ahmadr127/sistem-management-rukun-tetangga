@@ -33,6 +33,27 @@ return [
         'title' => 'Pengaturan',
         'menus' => [
             [
+                'label' => 'RT',
+                'icon' => 'bi-geo-alt-fill',
+                'permissions' => ['view_rt','view_alamat_rt'],
+                'children' => [
+                    [
+                        'label' => 'Data RT',
+                        'icon' => 'bi-geo-alt-fill',
+                        'route' => 'rts.index',
+                        'route_pattern' => 'rts.*',
+                        'permission' => 'view_rt',
+                    ],
+                    [
+                        'label' => 'Management Alamat',
+                        'icon' => 'bi-signpost-2-fill',
+                        'route' => 'alamat-rt.index',
+                        'route_pattern' => 'alamat-rt.*',
+                        'permission' => 'view_alamat_rt',
+                    ],
+                ],
+            ],
+            [
                 'label' => 'Pengguna & Akses',
                 'icon' => 'bi-person-fill-gear',
                 'permissions' => ['manage_users', 'manage_roles', 'manage_permissions'],
@@ -94,7 +115,7 @@ return [
             [
                 'label' => 'Keuangan',
                 'icon' => 'bi-cash-coin',
-                'permissions' => ['view_keuangan', 'view_laporan_keuangan'],
+                'permissions' => ['view_keuangan', 'view_laporan_keuangan', 'view_kas'],
                 'children' => [
                     [
                         'label' => 'Pemasukan',
@@ -116,6 +137,13 @@ return [
                         'route' => 'keuangan.laporan',
                         'route_pattern' => 'keuangan.laporan',
                         'permission' => 'view_laporan_keuangan',
+                    ],
+                    [
+                        'label' => 'Kas Warga',
+                        'icon' => 'bi-wallet2',
+                        'route' => 'kas-warga.index',
+                        'route_pattern' => 'kas-warga.*',
+                        'permission' => 'view_kas',
                     ],
                 ],
             ],

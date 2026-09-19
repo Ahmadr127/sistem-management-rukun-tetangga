@@ -36,34 +36,66 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'view_peminjaman', 'display_name' => 'Lihat Peminjaman', 'description' => 'Melihat peminjaman inventaris'],
             ['name' => 'view_laporan_inventaris', 'display_name' => 'Lihat Laporan Inventaris', 'description' => 'Melihat rekap inventaris'],
             ['name' => 'view_activity_logs', 'display_name' => 'Lihat Audit Log', 'description' => 'Melihat riwayat aktivitas'],
+            // RT & Kas Warga
+            ['name' => 'manage_rt', 'display_name' => 'Kelola RT', 'description' => 'Mengelola data RT'],
+            ['name' => 'view_rt', 'display_name' => 'Lihat RT', 'description' => 'Melihat data RT'],
+            ['name' => 'manage_kas', 'display_name' => 'Kelola Kas Warga', 'description' => 'Mengelola kas warga mingguan/bulanan'],
+            ['name' => 'view_kas', 'display_name' => 'Lihat Kas Warga', 'description' => 'Melihat kas warga'],
+            ['name' => 'manage_alamat_rt', 'display_name' => 'Kelola Alamat RT', 'description' => 'Mengelola master alamat RT'],
+            ['name' => 'view_alamat_rt', 'display_name' => 'Lihat Alamat RT', 'description' => 'Melihat master alamat RT'],
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create($permission);
+            Permission::firstOrCreate(
+                ['name' => $permission['name']],
+                $permission
+            );
         }
 
-        // Create Roles
-        $adminRole = Role::create([
-            'name' => 'admin',
-            'display_name' => 'Administrator',
-            'description' => 'Role dengan akses penuh ke sistem'
-        ]);
+        // Create Roles - idempotent for migrate:fresh where migrations already inserted permissions
+        $adminRole = Role::firstOrCreate(
+            ['name' => 'admin'],
+            ['display_name' => 'Superadmin', 'description' => 'Role dengan akses penuh ke sistem']
+        );
+        // Alias superadmin for clarity, keep admin for backward compat
+        $superadminRole = Role::firstOrCreate(
+            ['name' => 'superadmin'],
+            ['display_name' => 'Superadmin', 'description' => 'Role superadmin - akses penuh']
+        );
 
+        $userRole = Role::firstOrCreate(
+            ['name' => 'user'],
+            ['display_name' => 'Pengguna', 'description' => 'Role untuk pengguna umum']
+        );
+        $rtRole = Role::firstOrCreate(
+            ['name' => 'rt'],
+            ['display_name' => 'Pengurus RT', 'description' => 'Role pengurus RT - akses terbatas sesuai RT']
+        );
 
-        $userRole = Role::create([
-            'name' => 'user',
-            'display_name' => 'Pengguna',
-            'description' => 'Role untuk pengguna umum'
-        ]);
-
-        // Assign permissions to roles
-        $adminRole->permissions()->attach(Permission::all()); // Admin gets all permissions
+        // Assign permissions to roles - use syncWithoutDetaching to avoid duplicate pivot errors
+        $allPerms = Permission::all()->pluck('id')->toArray();
+        $adminRole->permissions()->syncWithoutDetaching($allPerms);
+        $superadminRole->permissions()->syncWithoutDetaching($allPerms);
         
-        
-        $userRole->permissions()->attach(
+        $userRole->permissions()->syncWithoutDetaching(
             Permission::whereIn('name', [
                 'view_dashboard'
-            ])->get()
+            ])->pluck('id')->toArray()
         );
+
+        // RT role gets scoped permissions (filtering enforced in backend)
+        $rtPerms = Permission::whereIn('name', [
+            'view_dashboard',
+            'view_warga','manage_warga',
+            'view_kk','manage_kk',
+            'view_mutasi','manage_mutasi',
+            'view_keuangan','manage_keuangan','view_laporan_keuangan',
+            'view_inventaris','manage_inventaris','view_peminjaman','manage_peminjaman','view_laporan_inventaris',
+            'view_rt',
+            'view_kas','manage_kas',
+            'view_alamat_rt',
+            'view_activity_logs',
+        ])->pluck('id')->toArray();
+        $rtRole->permissions()->syncWithoutDetaching($rtPerms);
     }
 }

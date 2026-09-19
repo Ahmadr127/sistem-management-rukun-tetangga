@@ -2,7 +2,7 @@
 @section('title', 'Kartu Keluarga')
 @section('content')
 <div class="w-full mx-auto">
-    <x-card padding="false">
+    <x-card padding="false" accent="blue">
         <x-slot name="title">Data Kartu Keluarga</x-slot>
         <x-slot name="subtitle">KK & anggota keluarga — pengelompokan RT/RW</x-slot>
         <x-slot name="actions"><a href="{{ route('kartu-keluarga.create') }}" class="px-3 py-1.5 bg-sp-primary text-white rounded-md text-sm font-semibold"><i class="bi bi-plus-lg"></i> Tambah KK</a></x-slot>
@@ -14,9 +14,10 @@
                 <div class="flex gap-2"><button type="submit" class="px-4 py-1.5 text-sm bg-sp-primary text-white rounded-md">Filter</button><a href="{{ route('kartu-keluarga.index') }}" class="px-4 py-1.5 text-sm bg-gray-200 rounded-md">Reset</a></div>
             </form>
         </div>
-        <x-table :columns="['No KK','Kepala','Alamat','RT/RW','Jml Anggota','Aksi']" :pagination="$kk">
+        <x-table :columns="['No','No KK','Kepala','Alamat','RT/RW','Jml Anggota','Aksi']" :pagination="$kk" accent="blue">
             @foreach($kk as $k)
-            <tr class="hover:bg-gray-50">
+            <tr class="hover:bg-blue-50/40">
+                <td class="px-3 py-2 text-sm">{{ ($kk->currentPage()-1)*$kk->perPage() + $loop->iteration }}</td>
                 <td class="px-3 py-2 font-mono text-sm">{{ $k->no_kk }}</td>
                 <td class="px-3 py-2 text-sm font-medium">{{ $k->kepala_keluarga ?? '-' }}</td>
                 <td class="px-3 py-2 text-sm max-w-xs truncate">{{ $k->alamat ?? '-' }}</td>

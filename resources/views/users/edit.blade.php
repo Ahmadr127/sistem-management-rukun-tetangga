@@ -85,6 +85,14 @@
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700">RT <span class="text-gray-400 font-normal">(kosongkan untuk Superadmin)</span></label>
+                    <select name="rt_id" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                        <option value="">-- Superadmin (tanpa RT) --</option>
+                        @foreach($rts as $rt)<option value="{{ $rt->id }}" {{ old('rt_id',$user->rt_id)==$rt->id?'selected':'' }}>{{ $rt->kode_rt }} - {{ $rt->nama_rt }}</option>@endforeach
+                    </select>
+                    @error('rt_id')<p class="text-xs text-red-500">{{ $message }}</p>@enderror
+                </div>
 
                 <div class="md:col-span-2 flex justify-end">
                     <button type="submit" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">

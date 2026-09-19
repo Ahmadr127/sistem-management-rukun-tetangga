@@ -2,13 +2,24 @@
 @section('title', 'Data Warga')
 @section('content')
 <div class="w-full mx-auto">
-    <x-card padding="false">
+    <x-card padding="false" accent="teal">
         <x-slot name="title">Data Warga</x-slot>
         <x-slot name="subtitle">Pendataan warga — filter RT/RW dan pencarian</x-slot>
         <x-slot name="actions">
-            <a href="{{ route('warga.create') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-white rounded-md bg-sp-primary hover:bg-sp-primary-dark transition-colors">
-                <i class="bi bi-person-plus"></i> Tambah Warga
-            </a>
+            <div class="flex items-center gap-2">
+                @include('warga.partials._modal', [
+                    'rts' => $rtList ?? null,
+                    'action' => route('warga.store'),
+                    'method' => 'POST',
+                    'warga' => null,
+                    'modalId' => 'addWargaIndexModal',
+                    'title' => 'Tambah Warga (Modal)',
+                    'trigger' => '<span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-white rounded-md bg-teal-600 hover:bg-teal-700 transition-colors cursor-pointer"><i class="bi bi-plus-circle"></i> Modal</span>'
+                ])
+                <a href="{{ route('warga.create') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-white rounded-md bg-sp-primary hover:bg-sp-primary-dark transition-colors">
+                    <i class="bi bi-person-plus"></i> Tambah Warga
+                </a>
+            </div>
         </x-slot>
         <div class="px-4 py-3 border-b border-gray-100 bg-gray-50">
             <form method="GET" class="flex flex-wrap gap-3 items-end">
@@ -16,13 +27,20 @@
                     <label class="block text-xs font-semibold text-gray-600 mb-1">Cari</label>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama, NIK, pekerjaan..." class="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md bg-white">
                 </div>
-                <div class="w-28">
+                @if(auth()->user()->isSuperAdmin())
+                <div class="w-36">
                     <label class="block text-xs font-semibold text-gray-600 mb-1">RT</label>
-                    <select name="rt" class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md bg-white">
-                        <option value="">Semua</option>
-                        @foreach($rtList as $rt)<option value="{{ $rt }}" {{ request('rt')==$rt?'selected':'' }}>{{ $rt }}</option>@endforeach
+                    <select name="rt_id" class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md bg-white">
+                        <option value="">Semua RT</option>
+                        @foreach($rtList as $rt)<option value="{{ $rt->id }}" {{ (string)request('rt_id')===(string)$rt->id?'selected':'' }}>{{ $rt->kode_rt }}</option>@endforeach
                     </select>
                 </div>
+                @else
+                <div class="w-36">
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">RT</label>
+                    <div class="px-2 py-1.5 text-sm bg-teal-50 border border-teal-200 rounded-md font-semibold text-teal-800 text-center">{{ auth()->user()->rt?->kode_rt ?? '-' }}</div>
+                </div>
+                @endif
                 <div class="w-28">
                     <label class="block text-xs font-semibold text-gray-600 mb-1">RW</label>
                     <select name="rw" class="w-full px-2 py-1.5 text-sm border border-gray-300 rounded-md bg-white">
@@ -45,9 +63,10 @@
                 </div>
             </form>
         </div>
-        <x-table :columns="['NIK','Nama','L/P','KK','RT/RW','Pekerjaan','Status','Aksi']" :pagination="$warga">
+        <x-table :columns="['No','NIK','Nama','L/P','KK','RT/RW','Pekerjaan','Status','Aksi']" :pagination="$warga" accent="teal">
             @foreach($warga as $w)
-            <tr class="hover:bg-gray-50">
+            <tr class="hover:bg-teal-50/30">
+                <td class="px-3 py-2 text-sm">{{ ($warga->currentPage()-1)*$warga->perPage() + $loop->iteration }}</td>
                 <td class="px-3 py-2 text-sm font-mono">{{ $w->nik }}</td>
                 <td class="px-3 py-2">
                     <div class="text-sm font-medium text-gray-900">{{ $w->nama }}</div>
@@ -55,7 +74,7 @@
                 </td>
                 <td class="px-3 py-2 text-sm text-center">{{ $w->jenis_kelamin }}</td>
                 <td class="px-3 py-2 text-sm">{{ $w->kartuKeluarga->no_kk ?? '-' }}<div class="text-xs text-gray-500">{{ $w->hubungan_keluarga ?? '-' }}</div></td>
-                <td class="px-3 py-2 text-sm text-center">{{ $w->kartuKeluarga->rt ?? '-' }}/{{ $w->kartuKeluarga->rw ?? '-' }}</td>
+                <td class="px-3 py-2 text-sm text-center"><span class="px-1.5 py-0.5 text-xs bg-teal-100 text-teal-800 rounded">{{ $w->rt?->kode_rt ?? ($w->kartuKeluarga->rt ?? '-') }}</span>/{{ $w->kartuKeluarga->rw ?? '-' }}</td>
                 <td class="px-3 py-2 text-sm">{{ $w->pekerjaan ?? '-' }}</td>
                 <td class="px-3 py-2">
                     @if($w->status_warga=='AKTIF')<span class="px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-800">Aktif</span>

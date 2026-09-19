@@ -4,19 +4,29 @@
     'empty' => 'Tidak ada data.',
     'perPage' => null,
     'perPageOptions' => [5, 10, 25, 50, 100],
+    'accent' => null,
 ])
 
 @php
     $perPage = $perPage ?? (int) request('per_page', 10);
+    $accentHeader = [
+        'teal' => 'bg-teal-50 text-teal-800 border-teal-100',
+        'green' => 'bg-green-50 text-green-800 border-green-100',
+        'blue' => 'bg-blue-50 text-blue-800 border-blue-100',
+        'purple' => 'bg-purple-50 text-purple-800 border-purple-100',
+        'amber' => 'bg-amber-50 text-amber-800 border-amber-100',
+        'red' => 'bg-red-50 text-red-800 border-red-100',
+        'indigo' => 'bg-indigo-50 text-indigo-800 border-indigo-100',
+    ][$accent] ?? 'bg-gray-50 text-gray-700';
 @endphp
 
 <div {{ $attributes->merge(['class' => 'bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden']) }}>
     <div class="overflow-x-auto">
         <table class="w-full text-sm min-w-max">
             <thead>
-                <tr class="bg-gray-100">
+                <tr class="{{ $accentHeader }} border-b">
                     @foreach($columns as $column)
-                        <th class="px-4 py-2.5 text-left font-semibold text-gray-700 whitespace-nowrap">
+                        <th class="px-4 py-2.5 text-left font-semibold whitespace-nowrap {{ $accent ? '' : 'text-gray-700' }}">
                             {{ is_array($column) ? ($column['label'] ?? '') : $column }}
                         </th>
                     @endforeach

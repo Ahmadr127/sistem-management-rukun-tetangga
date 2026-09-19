@@ -14,13 +14,15 @@ class KartuKeluargaController extends Controller
 
     public function index(Request $request)
     {
-        $kk = $this->kkService->getKK($request->only(['search','rt','rw','date_from','date_to','per_page']));
-        return view('kartu-keluarga.index', compact('kk'));
+        $kk = $this->kkService->getKK($request->only(['search','rt','rt_id','rw','date_from','date_to','per_page']));
+        $rts = \App\Models\Rt::active()->orderBy('kode_rt')->get();
+        return view('kartu-keluarga.index', compact('kk','rts'));
     }
 
     public function create()
     {
-        return view('kartu-keluarga.create');
+        $rts = \App\Models\Rt::active()->orderBy('kode_rt')->get();
+        return view('kartu-keluarga.create', compact('rts'));
     }
 
     public function store(Store $request)
@@ -31,13 +33,18 @@ class KartuKeluargaController extends Controller
 
     public function show(KartuKeluarga $kartuKeluarga)
     {
-        $kartuKeluarga->load(['warga']);
-        return view('kartu-keluarga.show', compact('kartuKeluarga'));
+        $this->kkService->ensureRtAccess($kartuKeluarga);
+        $kartuKeluarga->load(['warga.rt','rtRelation.alamatRt','warga.kartuKeluarga']);
+        $rts = \App\Models\Rt::active()->orderBy('kode_rt')->get();
+        return view('kartu-keluarga.show', compact('kartuKeluarga','rts'));
     }
 
     public function edit(KartuKeluarga $kartuKeluarga)
     {
-        return view('kartu-keluarga.edit', compact('kartuKeluarga'));
+        $this->kkService->ensureRtAccess($kartuKeluarga);
+        $kartuKeluarga->load('warga');
+        $rts = \App\Models\Rt::active()->orderBy('kode_rt')->get();
+        return view('kartu-keluarga.edit', compact('kartuKeluarga','rts'));
     }
 
     public function update(Update $request, KartuKeluarga $kartuKeluarga)

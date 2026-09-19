@@ -7,7 +7,7 @@
         <div class="bg-white rounded-lg border p-4"><div class="text-xs text-gray-500">Total Pengeluaran</div><div class="text-xl font-bold text-red-600">Rp {{ number_format($saldo['pengeluaran'],0,',','.') }}</div></div>
         <div class="bg-white rounded-lg border p-4"><div class="text-xs text-gray-500">Saldo</div><div class="text-xl font-bold text-sp-primary">Rp {{ number_format($saldo['saldo'],0,',','.') }}</div></div>
     </div>
-    <x-card padding="false">
+    <x-card padding="false" accent="green">
         <x-slot name="title">Transaksi Pemasukan</x-slot>
         <x-slot name="actions"><a href="{{ route('keuangan.pemasukan.create') }}" class="px-3 py-1.5 bg-green-600 text-white rounded-md text-sm font-semibold"><i class="bi bi-plus-lg"></i> Tambah Pemasukan</a></x-slot>
         <div class="px-4 py-3 border-b bg-gray-50">
@@ -19,9 +19,10 @@
                 <div class="flex gap-2"><button type="submit" class="px-4 py-1.5 text-sm bg-sp-primary text-white rounded-md">Filter</button><a href="{{ route('keuangan.pemasukan.index') }}" class="px-4 py-1.5 text-sm bg-gray-200 rounded-md">Reset</a></div>
             </form>
         </div>
-        <x-table :columns="['Tanggal','Kategori','Jumlah','Sumber Dana','Keterangan','Aksi']" :pagination="$keuangan">
+        <x-table :columns="['No','Tanggal','Kategori','Jumlah','Sumber Dana','Keterangan','Aksi']" :pagination="$keuangan" accent="green">
             @foreach($keuangan as $k)
-            <tr class="hover:bg-gray-50">
+            <tr class="hover:bg-green-50/40">
+                <td class="px-3 py-2 text-sm">{{ ($keuangan->currentPage()-1)*$keuangan->perPage() + $loop->iteration }}</td>
                 <td class="px-3 py-2 text-sm">{{ $k->tanggal->format('d/m/Y') }}</td>
                 <td class="px-3 py-2"><span class="px-2 py-0.5 text-xs bg-green-100 text-green-800 rounded-full">{{ $k->kategori }}</span></td>
                 <td class="px-3 py-2 text-sm font-semibold text-green-600">Rp {{ number_format($k->jumlah,0,',','.') }}</td>

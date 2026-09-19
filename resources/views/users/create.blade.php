@@ -39,6 +39,15 @@
                         :required="true"
                     />
                 </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">RT <span class="text-gray-400 font-normal">(kosongkan untuk Superadmin)</span></label>
+                    <select name="rt_id" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                        <option value="">-- Superadmin (tanpa RT) --</option>
+                        @foreach($rts as $rt)<option value="{{ $rt->id }}" {{ old('rt_id')==$rt->id?'selected':'' }}>{{ $rt->kode_rt }} - {{ $rt->nama_rt }}</option>@endforeach
+                    </select>
+                    @error('rt_id')<p class="text-xs text-red-500">{{ $message }}</p>@enderror
+                    <p class="text-xs text-gray-500 mt-1">Pilih RT jika user adalah pengurus RT. Superadmin tidak memiliki RT.</p>
+                </div>
 
                 <div class="md:col-span-2 flex justify-end gap-2 pt-2">
                     <a href="{{ route('users.index') }}" class="inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-600 border border-gray-300 rounded-md bg-white hover:bg-gray-50 transition-colors">

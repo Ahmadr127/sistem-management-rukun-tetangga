@@ -23,7 +23,8 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::all();
-        return view('users.create', compact('roles'));
+        $rts = \App\Models\Rt::active()->orderBy('kode_rt')->get();
+        return view('users.create', compact('roles','rts'));
     }
 
     public function store(Store $request)
@@ -35,7 +36,8 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $roles = Role::all();
-        return view('users.edit', compact('user', 'roles'));
+        $rts = \App\Models\Rt::active()->orderBy('kode_rt')->get();
+        return view('users.edit', compact('user', 'roles','rts'));
     }
 
     public function update(Update $request, User $user)

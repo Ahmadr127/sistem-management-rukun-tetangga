@@ -22,8 +22,13 @@
         <x-card title="Pemasukan per Kategori"><div class="space-y-2">@forelse($laporan['by_kategori_pemasukan'] as $r)<div class="flex justify-between text-sm border-b py-1"><span>{{ $r->kategori }}</span><span class="font-semibold text-green-600">Rp {{ number_format($r->total,0,',','.') }}</span></div>@empty<p class="text-sm text-gray-500">Tidak ada data</p>@endforelse</div></x-card>
         <x-card title="Pengeluaran per Kategori"><div class="space-y-2">@forelse($laporan['by_kategori_pengeluaran'] as $r)<div class="flex justify-between text-sm border-b py-1"><span>{{ $r->kategori }}</span><span class="font-semibold text-red-600">Rp {{ number_format($r->total,0,',','.') }}</span></div>@empty<p class="text-sm text-gray-500">Tidak ada data</p>@endforelse</div></x-card>
     </div>
-    <x-card title="Tren 6 Bulan Terakhir">
-        <x-chart type="bar" :labels="collect($laporan['monthly'])->pluck('label')->toArray()" :datasets="[[ 'label'=>'Pemasukan','data'=>collect($laporan['monthly'])->pluck('pemasukan')->toArray(),'backgroundColor'=>'#16a34a' ],[ 'label'=>'Pengeluaran','data'=>collect($laporan['monthly'])->pluck('pengeluaran')->toArray(),'backgroundColor'=>'#dc2626' ]]" :height="260" />
+    <x-card title="Rekap Bulanan (Tabel)" padding="false">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-indigo-50"><tr><th class="px-3 py-2 text-left">Bulan</th><th class="px-3 py-2 text-right">Pemasukan</th><th class="px-3 py-2 text-right">Pengeluaran</th><th class="px-3 py-2 text-right">Selisih</th></tr></thead>
+                <tbody class="divide-y">@foreach($laporan['monthly'] as $m)<tr><td class="px-3 py-2">{{ $m['label'] }}</td><td class="px-3 py-2 text-right text-green-600">Rp {{ number_format($m['pemasukan'],0,',','.') }}</td><td class="px-3 py-2 text-right text-red-600">Rp {{ number_format($m['pengeluaran'],0,',','.') }}</td><td class="px-3 py-2 text-right font-semibold">Rp {{ number_format($m['pemasukan']-$m['pengeluaran'],0,',','.') }}</td></tr>@endforeach</tbody>
+            </table>
+        </div>
     </x-card>
     <x-card title="Detail Transaksi" padding="false">
         <div class="overflow-x-auto">

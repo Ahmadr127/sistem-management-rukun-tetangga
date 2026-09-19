@@ -2,7 +2,7 @@
 @section('title', 'Inventaris')
 @section('content')
 <div class="w-full mx-auto">
-    <x-card padding="false">
+    <x-card padding="false" accent="amber">
         <x-slot name="title">Data Inventaris</x-slot>
         <x-slot name="subtitle">Data barang milik RT/RW</x-slot>
         <x-slot name="actions"><a href="{{ route('inventaris.create') }}" class="px-3 py-1.5 bg-sp-primary text-white rounded-md text-sm font-semibold"><i class="bi bi-plus-lg"></i> Tambah Barang</a></x-slot>
@@ -14,9 +14,10 @@
                 <div class="flex gap-2"><button type="submit" class="px-4 py-1.5 text-sm bg-sp-primary text-white rounded-md">Filter</button><a href="{{ route('inventaris.index') }}" class="px-4 py-1.5 text-sm bg-gray-200 rounded-md">Reset</a></div>
             </form>
         </div>
-        <x-table :columns="['Kode','Nama Barang','Kategori','Jumlah','Kondisi','Lokasi','Nilai','Aksi']" :pagination="$inventaris">
+        <x-table :columns="['No','Kode','Nama Barang','Kategori','Jumlah','Kondisi','Lokasi','Nilai','Aksi']" :pagination="$inventaris" accent="amber">
             @foreach($inventaris as $inv)
-            <tr class="hover:bg-gray-50">
+            <tr class="hover:bg-amber-50/40">
+                <td class="px-3 py-2 text-sm">{{ ($inventaris->currentPage()-1)*$inventaris->perPage() + $loop->iteration }}</td>
                 <td class="px-3 py-2 text-sm font-mono">{{ $inv->kode_barang }}</td>
                 <td class="px-3 py-2"><div class="text-sm font-medium">{{ $inv->nama_barang }}</div><div class="text-xs text-gray-500">{{ $inv->satuan }}</div></td>
                 <td class="px-3 py-2 text-sm">{{ $inv->kategori ?? '-' }}</td>

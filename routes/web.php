@@ -15,6 +15,9 @@ use App\Http\Controllers\MutasiWargaController;
 use App\Http\Controllers\KeuanganController;
 use App\Http\Controllers\InventarisController;
 use App\Http\Controllers\PeminjamanInventarisController;
+use App\Http\Controllers\RtController;
+use App\Http\Controllers\KasWargaController;
+use App\Http\Controllers\AlamatRtController;
 
 /*
 |--------------------------------------------------------------------------
@@ -171,6 +174,47 @@ Route::middleware('auth')->group(function () {
             ->name('organization-units.remove-member');
         Route::patch('organization-units/{organization_unit}/head', [OrganizationUnitController::class, 'updateHead'])
             ->name('organization-units.update-head');
+    });
+
+    // RT Management routes
+    Route::middleware('permission:view_rt')->group(function () {
+        Route::get('rts', [RtController::class, 'index'])->name('rts.index');
+        Route::get('rts/{rt}', [RtController::class, 'show'])->name('rts.show');
+    });
+    Route::middleware('permission:manage_rt')->group(function () {
+        Route::get('rts-create', [RtController::class, 'create'])->name('rts.create');
+        Route::post('rts', [RtController::class, 'store'])->name('rts.store');
+        Route::get('rts/{rt}/edit', [RtController::class, 'edit'])->name('rts.edit');
+        Route::put('rts/{rt}', [RtController::class, 'update'])->name('rts.update');
+        Route::delete('rts/{rt}', [RtController::class, 'destroy'])->name('rts.destroy');
+    });
+
+    // Kas Warga routes
+    Route::middleware('permission:view_kas')->group(function () {
+        Route::get('kas-warga', [KasWargaController::class, 'index'])->name('kas-warga.index');
+        Route::get('kas-warga/{kasWarga}', [KasWargaController::class, 'show'])->name('kas-warga.show');
+    });
+    Route::middleware('permission:manage_kas')->group(function () {
+        Route::get('kas-warga-create', [KasWargaController::class, 'create'])->name('kas-warga.create');
+        Route::post('kas-warga', [KasWargaController::class, 'store'])->name('kas-warga.store');
+        Route::post('kas-warga/generate', [KasWargaController::class, 'generate'])->name('kas-warga.generate');
+        Route::get('kas-warga/{kasWarga}/edit', [KasWargaController::class, 'edit'])->name('kas-warga.edit');
+        Route::put('kas-warga/{kasWarga}', [KasWargaController::class, 'update'])->name('kas-warga.update');
+        Route::delete('kas-warga/{kasWarga}', [KasWargaController::class, 'destroy'])->name('kas-warga.destroy');
+        Route::get('api/warga-by-rt', [KasWargaController::class, 'wargaByRt'])->name('api.warga-by-rt');
+    });
+
+    // Alamat RT routes
+    Route::middleware('permission:view_alamat_rt')->group(function () {
+        Route::get('alamat-rt', [AlamatRtController::class, 'index'])->name('alamat-rt.index');
+        Route::get('api/rts/{rt}/alamat', [AlamatRtController::class, 'apiShow'])->name('api.alamat-rt.show');
+    });
+    Route::middleware('permission:manage_alamat_rt')->group(function () {
+        Route::get('alamat-rt/create', [AlamatRtController::class, 'create'])->name('alamat-rt.create');
+        Route::post('alamat-rt', [AlamatRtController::class, 'store'])->name('alamat-rt.store');
+        Route::get('alamat-rt/{alamatRt}/edit', [AlamatRtController::class, 'edit'])->name('alamat-rt.edit');
+        Route::put('alamat-rt/{alamatRt}', [AlamatRtController::class, 'update'])->name('alamat-rt.update');
+        Route::delete('alamat-rt/{alamatRt}', [AlamatRtController::class, 'destroy'])->name('alamat-rt.destroy');
     });
 
 });

@@ -14,7 +14,7 @@ class UserService
      * Create a new class instance.
      */
     public function getUsers(array $filters = []){
-        $query = User::with('role');
+        $query = User::with(['role','rt']);
 
         if (!empty($filters['search'])) {
             $search = $filters['search'];

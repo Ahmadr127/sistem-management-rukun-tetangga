@@ -15,6 +15,8 @@ class Update extends FormRequest
         $id = is_object($warga) ? $warga->id : $warga;
         return [
             'kartu_keluarga_id' => 'nullable|exists:kartu_keluarga,id',
+            'rt_id' => 'nullable|exists:rts,id',
+            'alamat_detail' => 'nullable|string|max:255',
             'nik' => ['required','string','size:16', Rule::unique('warga','nik')->ignore($id)],
             'nama' => 'required|string|max:255',
             'tempat_lahir' => 'nullable|string|max:255',
@@ -30,6 +32,8 @@ class Update extends FormRequest
             'nama_ayah' => 'nullable|string|max:255',
             'nama_ibu' => 'nullable|string|max:255',
             'no_hp' => 'nullable|string|max:20',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'remove_foto' => 'nullable|boolean',
             'status_warga' => 'nullable|in:AKTIF,PINDAH,MENINGGAL',
         ];
     }

@@ -30,7 +30,8 @@ class Update extends FormRequest
             'username' => 'required|string|max:255|unique:users,username,' . $userId,
             'email' => 'required|string|email|max:255|unique:users,email,' . $userId,
             'password' => 'nullable|string|min:8|confirmed',
-            'role_id' => 'required|exists:roles,id'
+            'role_id' => 'required|exists:roles,id',
+            'rt_id' => 'nullable|exists:rts,id',
         ];
     }
 }
