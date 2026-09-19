@@ -24,14 +24,13 @@
                     <div class="flex flex-wrap items-center gap-2 mt-0.5">
                         <h1 class="text-base font-semibold text-slate-900 tracking-tight">KK <span class="font-mono font-semibold">{{ $kartuKeluarga->no_kk }}</span></h1>
                         <button onclick="navigator.clipboard.writeText('{{ $kartuKeluarga->no_kk }}'); window.Toast&&Toast.success('No KK disalin')" class="inline-flex items-center justify-center w-5 h-5 rounded text-slate-400 hover:text-slate-700 hover:bg-slate-100" title="Salin"><i class="bi bi-copy text-xs"></i></button>
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">RT {{ $kartuKeluarga->rtRelation?->kode_rt ?? $kartuKeluarga->rt ?? '-' }} / RW {{ $kartuKeluarga->rw ?? $kartuKeluarga->rtRelation?->alamatRt?->rw ?? '-' }}</span>
+                        
                         <span class="inline-flex items-center gap-1.5 text-xs font-medium {{ $aktif ? 'text-emerald-700' : 'text-slate-500' }}"><span class="w-1.5 h-1.5 rounded-full {{ $aktif ? 'bg-emerald-600' : 'bg-slate-400' }}"></span>{{ $aktif ? 'Aktif' : 'Tidak aktif' }}</span>
                     </div>
-                    <div class="mt-1.5 text-xs text-slate-600">Kepala Keluarga: <span class="font-medium text-slate-900">{{ $kartuKeluarga->kepala_keluarga ?? '-' }}</span></div>
+                    
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
                     <a href="{{ route('kartu-keluarga.index') }}" class="inline-flex items-center gap-1 px-3 py-1.5 rounded text-xs font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-700">Kembali</a>
-                    <button onclick="window.print()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-slate-200 bg-white text-xs font-medium text-slate-700 hover:bg-slate-50">Cetak KK</button>
                     <a href="{{ route('kartu-keluarga.edit', $kartuKeluarga) }}" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded bg-sp-primary hover:bg-sp-primary-dark text-white text-xs font-semibold">Edit KK</a>
                 </div>
             </div>
@@ -43,69 +42,56 @@
         <div class="px-4 sm:px-5 py-4">
             <div class="flex items-baseline justify-between gap-3 mb-3">
                 <h2 class="text-xs font-semibold text-slate-900">Identitas & Wilayah Domisili</h2>
-                <span class="text-xs text-slate-500 hidden sm:block">Sumber: SIAK / Reguler RT</span>
+                <span class="text-xs text-slate-500 hidden sm:block">-</span>
             </div>
             <div class="h-px bg-slate-200 mb-4"></div>
 
-            {{-- Row 1: 4 cols --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4">
-                <div>
-                    <div class="text-xs text-slate-500">Nomor Kartu Keluarga</div>
-                    <div class="mt-1 font-mono text-sm font-medium text-slate-900 flex items-center gap-1.5">{{ $kartuKeluarga->no_kk }}<button onclick="navigator.clipboard.writeText('{{ $kartuKeluarga->no_kk }}');window.Toast&&Toast.success('No KK disalin')" class="text-slate-400 hover:text-slate-600"><i class="bi bi-copy text-xs"></i></button></div>
+            {{-- Grid sejajar 12 kolom (sejajar vertikal di semua row) --}}
+            <div class="grid grid-cols-12 gap-x-6 gap-y-5">
+                {{-- Row 1: Nomor (4) | Kepala (4) | RT (2) | RW (2) → 4+4+2+2=12, selaras dengan baris 4+4+4 di bawah pada garis 4 dan 8 --}}
+                <div class="col-span-12 sm:col-span-6 lg:col-span-4">
+                    <div class="text-xs text-slate-500 leading-none">Nomor Kartu Keluarga</div>
+                    <div class="mt-1.5 font-mono text-sm font-medium text-slate-900 flex items-center gap-1.5 leading-none">{{ $kartuKeluarga->no_kk }}<button onclick="navigator.clipboard.writeText('{{ $kartuKeluarga->no_kk }}');window.Toast&&Toast.success('No KK disalin')" class="inline-flex items-center justify-center w-5 h-5 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 shrink-0"><i class="bi bi-copy text-xs"></i></button></div>
                 </div>
-                <div>
-                    <div class="text-xs text-slate-500">Kepala Keluarga</div>
-                    <div class="mt-1 text-sm font-medium text-slate-900">{{ $kartuKeluarga->kepala_keluarga ?? '-' }}</div>
+                <div class="col-span-12 sm:col-span-6 lg:col-span-4">
+                    <div class="text-xs text-slate-500 leading-none">Kepala Keluarga</div>
+                    <div class="mt-1.5 text-sm font-medium text-slate-900 leading-none truncate">{{ $kartuKeluarga->kepala_keluarga ?? '-' }}</div>
                 </div>
-                <div>
-                    <div class="text-xs text-slate-500">RT</div>
-                    <div class="mt-1 text-sm font-medium text-slate-900">RT {{ $kartuKeluarga->rtRelation?->kode_rt ?? $kartuKeluarga->rt ?? '-' }} <span class="text-xs font-normal text-slate-500">{{ $kartuKeluarga->rtRelation?->nama_rt ?? '' }}</span></div>
+                <div class="col-span-6 lg:col-span-2">
+                    <div class="text-xs text-slate-500 leading-none">RT</div>
+                    <div class="mt-1.5 text-sm font-medium text-slate-900 leading-none">{{ $kartuKeluarga->rtRelation?->kode_rt ?? $kartuKeluarga->rt ?? '-' }}</div>
                 </div>
-                <div>
-                    <div class="text-xs text-slate-500">RW</div>
-                    <div class="mt-1 text-sm font-medium text-slate-900">{{ $kartuKeluarga->rw ?? $kartuKeluarga->rtRelation?->alamatRt?->rw ?? '-' }}</div>
+                <div class="col-span-6 lg:col-span-2">
+                    <div class="text-xs text-slate-500 leading-none">RW</div>
+                    <div class="mt-1.5 text-sm font-medium text-slate-900 leading-none">{{ $kartuKeluarga->rw ?? '-' }}</div>
                 </div>
-            </div>
 
-            {{-- Master alamat compact line --}}
-            <div class="mt-4 pt-3 border-t border-slate-100">
-                <div class="text-xs text-slate-500">Alamat Wilayah RT (Master)</div>
-                @if($kartuKeluarga->rtRelation?->alamatRt)
-                    <div class="mt-1 text-xs text-slate-700 leading-relaxed">{{ $kartuKeluarga->rtRelation->alamatRt->alamat ?? '-' }}, RW {{ $kartuKeluarga->rtRelation->alamatRt->rw }}, {{ $kartuKeluarga->rtRelation->alamatRt->kelurahan }}, {{ $kartuKeluarga->rtRelation->alamatRt->kecamatan }}, {{ $kartuKeluarga->rtRelation->alamatRt->kota }}, {{ $kartuKeluarga->rtRelation->alamatRt->provinsi }} {{ $kartuKeluarga->rtRelation->alamatRt->kode_pos }}</div>
-                @else
-                    <div class="mt-1 text-xs text-amber-700">Alamat RT belum dikonfigurasi. <a href="{{ route('alamat-rt.index') }}" class="underline hover:text-amber-800">Konfigurasi</a></div>
-                @endif
-            </div>
+                {{-- Row 2: 3 kolom sejajar (4+4+4) --}}
+                <div class="col-span-12 lg:col-span-4">
+                    <div class="text-xs text-slate-500 leading-none">Alamat Detail</div>
+                    <div class="mt-1.5 text-sm text-slate-900 leading-snug break-words">{{ $kartuKeluarga->alamat ?? '-' }}</div>
+                </div>
+                <div class="col-span-12 sm:col-span-6 lg:col-span-4">
+                    <div class="text-xs text-slate-500 leading-none">Dusun / Lingkungan</div>
+                    <div class="mt-1.5 text-sm text-slate-700 leading-none">{{ $kartuKeluarga->dusun ?? '-' }}</div>
+                </div>
+                <div class="col-span-12 sm:col-span-6 lg:col-span-4">
+                    <div class="text-xs text-slate-500 leading-none">Desa / Kelurahan</div>
+                    <div class="mt-1.5 text-sm font-medium text-slate-900 leading-none">{{ $kartuKeluarga->desa ?? '-' }}</div>
+                </div>
 
-            {{-- Row 2: 3 cols --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 mt-4">
-                <div>
-                    <div class="text-xs text-slate-500">Alamat Detail</div>
-                    <div class="mt-1 text-sm text-slate-900">{{ $kartuKeluarga->alamat ?? '-' }}</div>
+                {{-- Row 3: 3 kolom sejajar (4+4+4) --}}
+                <div class="col-span-12 sm:col-span-6 lg:col-span-4">
+                    <div class="text-xs text-slate-500 leading-none">Kecamatan</div>
+                    <div class="mt-1.5 text-sm font-medium text-slate-900 leading-none">{{ $kartuKeluarga->kecamatan ?? '-' }}</div>
                 </div>
-                <div>
-                    <div class="text-xs text-slate-500">Dusun / Lingkungan</div>
-                    <div class="mt-1 text-sm text-slate-700">{{ $kartuKeluarga->dusun ?? '-' }}</div>
+                <div class="col-span-12 sm:col-span-6 lg:col-span-4">
+                    <div class="text-xs text-slate-500 leading-none">Kabupaten / Kota</div>
+                    <div class="mt-1.5 text-sm font-medium text-slate-900 leading-none">{{ $kartuKeluarga->kabupaten ?? '-' }}</div>
                 </div>
-                <div>
-                    <div class="text-xs text-slate-500">Desa / Kelurahan</div>
-                    <div class="mt-1 text-sm font-medium text-slate-900">{{ $kartuKeluarga->desa ?? $kartuKeluarga->rtRelation?->alamatRt?->kelurahan ?? '-' }}</div>
-                </div>
-            </div>
-
-            {{-- Row 3: 3 cols --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 mt-4">
-                <div>
-                    <div class="text-xs text-slate-500">Kecamatan</div>
-                    <div class="mt-1 text-sm font-medium text-slate-900">{{ $kartuKeluarga->kecamatan ?? $kartuKeluarga->rtRelation?->alamatRt?->kecamatan ?? '-' }}</div>
-                </div>
-                <div>
-                    <div class="text-xs text-slate-500">Kabupaten / Kota</div>
-                    <div class="mt-1 text-sm font-medium text-slate-900">{{ $kartuKeluarga->kabupaten ?? $kartuKeluarga->rtRelation?->alamatRt?->kota ?? '-' }}</div>
-                </div>
-                <div>
-                    <div class="text-xs text-slate-500">Provinsi & Kode Pos</div>
-                    <div class="mt-1 text-sm font-medium text-slate-900">{{ $kartuKeluarga->provinsi ?? $kartuKeluarga->rtRelation?->alamatRt?->provinsi ?? '-' }} <span class="font-normal text-slate-500">/</span> {{ $kartuKeluarga->kode_pos ?? $kartuKeluarga->rtRelation?->alamatRt?->kode_pos ?? '-' }}</div>
+                <div class="col-span-12 lg:col-span-4">
+                    <div class="text-xs text-slate-500 leading-none">Provinsi & Kode Pos</div>
+                    <div class="mt-1.5 text-sm font-medium text-slate-900 leading-none">{{ $kartuKeluarga->provinsi ?? '-' }} <span class="font-normal text-slate-500">/</span> {{ $kartuKeluarga->kode_pos ?? '-' }}</div>
                 </div>
             </div>
         </div>
@@ -157,7 +143,7 @@
                                                 @if($w->foto_url)<img src="{{ $w->foto_url }}" class="w-full h-full object-cover">@else<span class="text-[10px] font-semibold text-slate-600">{{ $w->inisial }}</span>@endif
                                             </span>
                                             <span class="font-medium text-slate-900">{{ $w->nama }}</span>
-                                            @if($w->nama === $kartuKeluarga->kepala_keluarga)<span class="text-[10px] leading-none px-1 py-0.5 rounded bg-slate-900 text-white">Kepala</span>@endif
+                                            <!-- @if($w->nama === $kartuKeluarga->kepala_keluarga)<span class="text-[10px] leading-none px-1 py-0.5 rounded bg-slate-900 text-white">Kepala</span>@endif  jangan ditambah lagi -->
                                         </div>
                                         <div class="text-xs text-slate-500 mt-0.5 sm:hidden">{{ $w->nik }} • {{ $w->jenis_kelamin }}</div>
                                     </td>
@@ -196,7 +182,7 @@
                         <div class="p-3 flex gap-3">
                             <span class="w-7 h-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden shrink-0">@if($w->foto_url)<img src="{{ $w->foto_url }}" class="w-full h-full object-cover">@else<span class="text-xs font-semibold text-slate-600">{{ $w->inisial }}</span>@endif</span>
                             <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-1.5"><span class="text-sm font-medium text-slate-900">{{ $w->nama }}</span>@if($w->nama === $kartuKeluarga->kepala_keluarga)<span class="text-[10px] px-1 py-0.5 rounded bg-slate-900 text-white">Kepala</span>@endif</div>
+                                <div class="flex items-center gap-1.5"><span class="text-sm font-medium text-slate-900">{{ $w->nama }}</span></div>
                                 <div class="font-mono text-xs text-slate-600">{{ $w->nik }}</div>
                                 <div class="text-xs text-slate-500 mt-1">{{ $w->hubungan_keluarga ?? '-' }} • {{ $w->pekerjaan ?? '-' }}</div>
                             </div>
