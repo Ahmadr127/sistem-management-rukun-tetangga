@@ -7,7 +7,8 @@
     $statusColor = $warga->status_warga=='AKTIF' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : ($warga->status_warga=='PINDAH' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-slate-100 text-slate-600 border-slate-200');
     $kk = $warga->kartuKeluarga;
     $rtKode = $warga->rt?->kode_rt ?? '-';
-    $rwKode = $kk?->rw ?? $warga->rt?->alamatRt?->rw ?? '-';
+    $master = $warga->rt?->alamatRt;
+    $rwKode = $master?->rw ?? $kk?->rw ?? '-';
     $waNumber = preg_replace('/[^0-9]/', '', $warga->no_hp ?? '');
     if($waNumber && substr($waNumber,0,1)=='0') $waNumber = '62'.substr($waNumber,1);
 @endphp
@@ -98,27 +99,26 @@
             <div class="py-3 px-4 flex justify-between items-center"><span class="text-slate-500">Nama Ibu</span><span class="font-semibold text-slate-900">{{ $warga->nama_ibu ?? '-' }}</span></div>
         </div>
 
-        {{-- Pane Domisili --}}
+        {{-- Pane Domisili: MASTER + DETAIL, tanpa duplikasi Alamat KK --}}
         <div x-show="tab==='domisili'" x-cloak class="divide-y divide-slate-100 text-xs">
             <div class="py-3 px-4 flex justify-between items-center"><span class="text-slate-500">Wilayah RT/RW</span><span class="font-semibold text-slate-900">RT {{ $rtKode }} / RW {{ $rwKode }}</span></div>
-            <div class="py-3 px-4">
-                <div class="text-slate-500 mb-1">Alamat Wilayah RT (Master)</div>
-                @if($warga->rt?->alamatRt)
-                    <div class="font-medium text-slate-900">{{ $warga->rt->alamatRt->alamat ?? '-' }}</div>
-                    <div class="text-[11px] text-slate-500">RW {{ $warga->rt->alamatRt->rw }}, {{ $warga->rt->alamatRt->kelurahan }}, {{ $warga->rt->alamatRt->kecamatan }}, {{ $warga->rt->alamatRt->kota }}, {{ $warga->rt->alamatRt->provinsi }} {{ $warga->rt->alamatRt->kode_pos }}</div>
+            <div class="py-3 px-4 flex flex-col gap-1">
+                <span class="text-slate-500">Alamat Wilayah RT</span>
+                @if($master)
+                    <span class="font-semibold text-slate-900">{{ $master->alamat ?? '-' }}</span>
                 @else
-                    <div class="text-amber-700 text-xs">Alamat RT belum dikonfigurasi. <a href="{{ route('alamat-rt.index') }}" class="underline">Konfigurasi</a></div>
+                    <span class="text-amber-700">Alamat RT belum dikonfigurasi. <a href="{{ route('alamat-rt.index') }}" class="underline">Konfigurasi</a></span>
                 @endif
             </div>
             <div class="py-3 px-4 flex flex-col gap-1">
-                <span class="text-slate-500">Alamat Detail (Domisili)</span>
+                <span class="text-slate-500">Alamat Detail</span>
                 <span class="font-semibold text-slate-900">{{ $warga->alamat_detail ?? '-' }}</span>
             </div>
-            <div class="py-3 px-4 flex flex-col gap-1">
-                <span class="text-slate-500">Alamat KK</span>
-                <span class="font-semibold text-slate-900">{{ $kk?->alamat_lengkap ?? '-' }}</span>
-                <span class="text-[11px] text-slate-500">{{ $kk?->alamat ?? '-' }} @if($kk) — RT {{ $kk->rt }}/RW {{ $kk->rw }}, {{ $kk->desa }}, {{ $kk->kecamatan }} @endif</span>
-            </div>
+            <div class="py-3 px-4 flex justify-between items-center"><span class="text-slate-500">Desa / Kelurahan</span><span class="font-semibold text-slate-900">{{ $master?->kelurahan ?? '-' }}</span></div>
+            <div class="py-3 px-4 flex justify-between items-center"><span class="text-slate-500">Kecamatan</span><span class="font-semibold text-slate-900">{{ $master?->kecamatan ?? '-' }}</span></div>
+            <div class="py-3 px-4 flex justify-between items-center"><span class="text-slate-500">Kabupaten / Kota</span><span class="font-semibold text-slate-900">{{ $master?->kota ?? '-' }}</span></div>
+            <div class="py-3 px-4 flex justify-between items-center"><span class="text-slate-500">Provinsi</span><span class="font-semibold text-slate-900">{{ $master?->provinsi ?? '-' }}</span></div>
+            <div class="py-3 px-4 flex justify-between items-center"><span class="text-slate-500">Kode Pos</span><span class="font-semibold text-slate-900">{{ $master?->kode_pos ?? '-' }}</span></div>
             <div class="py-3 px-4 flex justify-between items-center"><span class="text-slate-500">Status Warga</span><span class="font-semibold text-slate-900">{{ $warga->status_warga }}</span></div>
         </div>
 
