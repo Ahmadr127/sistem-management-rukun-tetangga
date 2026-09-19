@@ -27,6 +27,7 @@ class PeminjamanInventaris extends Model
         'keperluan',
         'keterangan',
         'kondisi_kembali',
+        'foto_kembali',
         'disetujui_oleh',
     ];
 
@@ -81,5 +82,35 @@ class PeminjamanInventaris extends Model
     {
         return $query->where('status', 'DIPINJAM')
                      ->where('tanggal_kembali_rencana', '<', now()->toDateString());
+    }
+
+    public function getFotoKembaliUrlAttribute(): ?string
+    {
+        $first = $this->fotoKembaliArray[0] ?? null;
+        if ($first && \Illuminate\Support\Facades\Storage::disk('public')->exists($first)) {
+            return \Illuminate\Support\Facades\Storage::url($first);
+        }
+        if ($this->attributes['foto_kembali'] && !str_starts_with($this->attributes['foto_kembali'], '[') && \Illuminate\Support\Facades\Storage::disk('public')->exists($this->attributes['foto_kembali'])) {
+            return \Illuminate\Support\Facades\Storage::url($this->attributes['foto_kembali']);
+        }
+        return null;
+    }
+
+    public function getFotoKembaliArrayAttribute(): array
+    {
+        $val = $this->attributes['foto_kembali'] ?? null;
+        if (!$val) return [];
+        $decoded = json_decode($val, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            return array_values(array_filter($decoded));
+        }
+        return [$val];
+    }
+
+    public function getFotoKembaliUrlsAttribute(): array
+    {
+        return array_values(array_filter(array_map(function($p){
+            return \Illuminate\Support\Facades\Storage::disk('public')->exists($p) ? \Illuminate\Support\Facades\Storage::url($p) : null;
+        }, $this->fotoKembaliArray)));
     }
 }

@@ -6,6 +6,7 @@ use App\Models\PeminjamanInventaris;
 use App\Models\Inventaris;
 use App\Services\ActivityLogService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PeminjamanInventarisService
 {
@@ -39,7 +40,10 @@ class PeminjamanInventarisService
         $inventaris = Inventaris::findOrFail($data['inventaris_id']);
         $tersedia = $inventaris->stok_tersedia;
         if ($data['jumlah_pinjam'] > $tersedia) {
-            throw new \InvalidArgumentException("Stok tidak cukup! Tersedia: {$tersedia}, diminta: {$data['jumlah_pinjam']}");
+            $status = $tersedia === 0
+                ? "Out of stock! {$inventaris->nama_barang} stok habis (tersedia 0). Silakan pilih barang lain atau tunggu pengembalian."
+                : "Stok tidak cukup! {$inventaris->nama_barang} tersedia {$tersedia}, diminta {$data['jumlah_pinjam']}. Kurangi jumlah pinjam.";
+            throw new \InvalidArgumentException($status);
         }
 
         $data['disetujui_oleh'] = Auth::id();
@@ -79,12 +83,28 @@ class PeminjamanInventarisService
 
         $oldData = $peminjaman->toArray();
 
+        // handle foto_kembali upload (multiple)
+        $fotoKembaliPaths = [];
+        if (isset($data['foto_kembali']) && is_array($data['foto_kembali'])) {
+            foreach ($data['foto_kembali'] as $file) {
+                if ($file instanceof \Illuminate\Http\UploadedFile) $fotoKembaliPaths[] = $file->store('peminjaman/foto_kembali', 'public');
+            }
+        } elseif (isset($data['foto_kembali']) && $data['foto_kembali'] instanceof \Illuminate\Http\UploadedFile) {
+            $fotoKembaliPaths[] = $data['foto_kembali']->store('peminjaman/foto_kembali', 'public');
+        }
+        unset($data['foto_kembali']);
+
         $update = [
             'status' => $data['status'] ?? 'DIKEMBALIKAN',
             'tanggal_kembali_aktual' => $data['tanggal_kembali_aktual'] ?? now()->toDateString(),
             'kondisi_kembali' => $data['kondisi_kembali'] ?? null,
             'keterangan' => $data['keterangan'] ?? $peminjaman->keterangan,
         ];
+        if (!empty($fotoKembaliPaths)) {
+            $existing = $peminjaman->fotoKembaliArray;
+            $merged = array_values(array_merge($existing, $fotoKembaliPaths));
+            $update['foto_kembali'] = json_encode($merged);
+        }
 
         $peminjaman->update($update);
         $peminjaman->refresh();

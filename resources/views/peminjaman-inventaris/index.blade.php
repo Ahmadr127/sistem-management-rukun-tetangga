@@ -13,9 +13,10 @@
                 <div class="flex gap-2"><button type="submit" class="px-4 py-1.5 text-sm bg-sp-primary text-white rounded-md">Filter</button><a href="{{ route('peminjaman-inventaris.index') }}" class="px-4 py-1.5 text-sm bg-gray-200 rounded-md">Reset</a></div>
             </form>
         </div>
-        <x-table :columns="['Tanggal Pinjam','Barang','Peminjam','Jml','Rencana Kembali','Status','Aksi']" :pagination="$peminjaman">
+        <x-table :columns="['No','Tanggal Pinjam','Barang','Peminjam','Jml','Rencana Kembali','Status','Aksi']" :pagination="$peminjaman" accent="amber">
             @foreach($peminjaman as $p)
-            <tr class="hover:bg-gray-50 {{ $p->is_terlambat ? 'bg-red-50' : '' }}">
+            <tr class="hover:bg-amber-50/40 {{ $p->is_terlambat ? 'bg-red-50' : ($p->status=='DIKEMBALIKAN' ? 'bg-green-50/40' : '') }}">
+                <td class="px-3 py-2 text-sm text-center text-slate-500">{{ ($peminjaman->currentPage()-1)*$peminjaman->perPage() + $loop->iteration }}</td>
                 <td class="px-3 py-2 text-sm">{{ $p->tanggal_pinjam->format('d/m/Y') }}</td>
                 <td class="px-3 py-2"><div class="text-sm font-medium">{{ $p->inventaris->nama_barang ?? '-' }}</div><div class="text-xs text-gray-500">{{ $p->inventaris->kode_barang ?? '-' }}</div></td>
                 <td class="px-3 py-2"><div class="text-sm">{{ $p->nama_peminjam_display }}</div><div class="text-xs text-gray-500">{{ $p->warga->nik ?? $p->no_hp_peminjam ?? '' }}</div></td>
@@ -31,11 +32,11 @@
                     <x-actions>
                         <x-actions-item href="{{ route('peminjaman-inventaris.show', $p) }}" icon="bi-eye" label="Lihat" />
                         @if($p->status=='DIPINJAM')
-                        <a href="#" onclick="event.preventDefault(); if(confirm('Kembalikan barang ini?')) document.getElementById('kembali-{{ $p->id }}').submit();" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-green-50 text-green-600"><i class="bi bi-box-arrow-in-left"></i> Kembalikan</a>
+                        <!-- <a href="#" onclick="event.preventDefault(); if(confirm('Kembalikan barang ini?')) document.getElementById('kembali-{{ $p->id }}').submit();" class="flex items-center gap-2 px-3 py-2 text-sm hover:bg-green-50 text-green-600"><i class="bi bi-box-arrow-in-left"></i> Kembalikan</a>
                         <form id="kembali-{{ $p->id }}" action="{{ route('peminjaman-inventaris.kembalikan', $p) }}" method="POST" class="hidden">@csrf @method('PATCH')
                             <input type="hidden" name="tanggal_kembali_aktual" value="{{ date('Y-m-d') }}">
                             <input type="hidden" name="status" value="DIKEMBALIKAN">
-                        </form>
+                        </form> -->
                         @endif
                         <x-actions-item href="{{ route('peminjaman-inventaris.edit', $p) }}" icon="bi-pencil" label="Edit" />
                         <x-actions-form action="{{ route('peminjaman-inventaris.destroy', $p) }}" method="DELETE" icon="bi-trash" label="Hapus" confirm="Hapus peminjaman ini?" />

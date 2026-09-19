@@ -24,6 +24,10 @@ class Update extends FormRequest
             'sumber_dana' => 'nullable|string|max:255',
             'tanggal_pengadaan' => 'nullable|date',
             'keterangan' => 'nullable|string',
+            'foto' => 'nullable|array',
+            'foto.*' => 'image|mimes:jpg,jpeg,png,webp|max:3072',
+            'remove_foto' => 'nullable|array',
+            'remove_foto.*' => 'string',
         ];
     }
 }

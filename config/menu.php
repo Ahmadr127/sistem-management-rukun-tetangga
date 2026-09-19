@@ -161,7 +161,7 @@ return [
                         'label' => 'Data Barang',
                         'icon' => 'bi-box-seam',
                         'route' => 'inventaris.index',
-                        'route_pattern' => 'inventaris.*',
+                        'route_pattern' => ['inventaris.index','inventaris.create','inventaris.show','inventaris.edit'],
                         'permission' => 'view_inventaris',
                     ],
                     [

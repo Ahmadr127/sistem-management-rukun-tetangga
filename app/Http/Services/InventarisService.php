@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Models\Inventaris;
 use App\Services\ActivityLogService;
+use Illuminate\Support\Facades\Storage;
 
 class InventarisService
 {
@@ -35,6 +36,16 @@ class InventarisService
         if (!empty($data['harga_satuan']) && !empty($data['jumlah'])) {
             $data['total_harga'] = $data['harga_satuan'] * $data['jumlah'];
         }
+        $paths = [];
+        if (isset($data['foto']) && is_array($data['foto'])) {
+            foreach ($data['foto'] as $file) {
+                if ($file instanceof \Illuminate\Http\UploadedFile) $paths[] = $file->store('inventaris/foto', 'public');
+            }
+        } elseif (isset($data['foto']) && $data['foto'] instanceof \Illuminate\Http\UploadedFile) {
+            $paths[] = $data['foto']->store('inventaris/foto', 'public');
+        }
+        if ($paths) $data['foto'] = json_encode($paths);
+        else unset($data['foto']);
         $inv = Inventaris::create($data);
         $this->activityLogger->log($inv, 'created', $inv->toArray(), "Inventaris {$inv->nama_barang} dibuat");
         return $inv;
@@ -46,6 +57,32 @@ class InventarisService
             $harga = $data['harga_satuan'] ?? $inventaris->harga_satuan;
             $jumlah = $data['jumlah'] ?? $inventaris->jumlah;
             if ($harga !== null) $data['total_harga'] = $harga * $jumlah;
+        }
+        $existing = $inventaris->fotoArray;
+        $hadRemove = !empty($data['remove_foto']);
+        if (!empty($data['remove_foto']) && is_array($data['remove_foto'])) {
+            foreach ($data['remove_foto'] as $path) {
+                Storage::disk('public')->delete($path);
+                $existing = array_values(array_filter($existing, fn($p) => $p !== $path));
+            }
+        } elseif (!empty($data['remove_foto']) && is_string($data['remove_foto'])) {
+            Storage::disk('public')->delete($data['remove_foto']);
+            $existing = array_values(array_filter($existing, fn($p) => $p !== $data['remove_foto']));
+        }
+        unset($data['remove_foto']);
+        $newPaths = [];
+        if (isset($data['foto']) && is_array($data['foto'])) {
+            foreach ($data['foto'] as $file) {
+                if ($file instanceof \Illuminate\Http\UploadedFile) $newPaths[] = $file->store('inventaris/foto', 'public');
+            }
+        } elseif (isset($data['foto']) && $data['foto'] instanceof \Illuminate\Http\UploadedFile) {
+            $newPaths[] = $data['foto']->store('inventaris/foto', 'public');
+        }
+        if ($hadRemove || !empty($newPaths)) {
+            $merged = array_values(array_merge($existing, $newPaths));
+            $data['foto'] = empty($merged) ? null : json_encode($merged);
+        } else {
+            unset($data['foto']);
         }
         $oldData = $inventaris->toArray();
         $inventaris->update($data);
@@ -60,6 +97,9 @@ class InventarisService
         if ($inventaris->peminjaman()->where('status','DIPINJAM')->exists()) {
             return ['success'=>false, 'message'=>'Inventaris tidak dapat dihapus karena masih ada peminjaman aktif!'];
         }
+        foreach ($inventaris->fotoArray as $path) Storage::disk('public')->delete($path);
+        // legacy single
+        if ($inventaris->foto && !str_starts_with($inventaris->foto, '[')) Storage::disk('public')->delete($inventaris->foto);
         $inventaris->loadMissing('peminjaman');
         $this->activityLogger->logDeleted($inventaris);
         $inventaris->delete();

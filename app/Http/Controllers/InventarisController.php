@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Inventaris\Store;
 use App\Http\Requests\Inventaris\Update;
 use App\Http\Services\InventarisService;
+use App\Http\Services\PeminjamanInventarisService;
 use App\Models\Inventaris;
 use Illuminate\Http\Request;
 
 class InventarisController extends Controller
 {
-    public function __construct(protected InventarisService $inventarisService) {}
+    public function __construct(protected InventarisService $inventarisService, protected PeminjamanInventarisService $peminjamanService) {}
 
     public function index(Request $request)
     {
@@ -59,7 +60,9 @@ class InventarisController extends Controller
 
     public function laporan(Request $request)
     {
+        $peminjaman = $this->peminjamanService->getPeminjaman($request->only(['search','status','inventaris_id','date_from','date_to','per_page']));
+        $inventarisList = Inventaris::orderBy('nama_barang')->get(['id','nama_barang','kode_barang']);
         $laporan = $this->inventarisService->getLaporan();
-        return view('inventaris.laporan', compact('laporan'));
+        return view('inventaris.laporan', compact('peminjaman','inventarisList','laporan'));
     }
 }

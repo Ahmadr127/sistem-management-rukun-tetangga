@@ -85,6 +85,21 @@ class DashboardController extends Controller
             $keuanganPengeluaran[] = (float) $kK->sum('jumlah');
         }
 
+        // Inventaris diagram data
+        $invKategoriQ = Inventaris::selectRaw('COALESCE(kategori,"Tanpa Kategori") as kategori, SUM(jumlah) as total_unit')
+            ->groupBy('kategori')->orderByDesc('total_unit')->get();
+        $inventarisKategoriLabels = $invKategoriQ->pluck('kategori')->toArray();
+        $inventarisKategoriData = $invKategoriQ->pluck('total_unit')->map(fn($v)=>(int)$v)->toArray();
+
+        $invKondisiQ = Inventaris::selectRaw('kondisi, COUNT(*) as jml')->groupBy('kondisi')->get();
+        $inventarisKondisiLabels = $invKondisiQ->pluck('kondisi')->toArray();
+        $inventarisKondisiData = $invKondisiQ->pluck('jml')->map(fn($v)=>(int)$v)->toArray();
+
+        // Peminjaman status for completeness (optional)
+        $peminjamanStatusQ = PeminjamanInventaris::selectRaw('status, COUNT(*) as jml')->groupBy('status')->get();
+        $peminjamanStatusLabels = $peminjamanStatusQ->pluck('status')->toArray();
+        $peminjamanStatusData = $peminjamanStatusQ->pluck('jml')->map(fn($v)=>(int)$v)->toArray();
+
         // Backward compat for old view
         $chartData = $wargaChart;
 
@@ -111,6 +126,6 @@ class DashboardController extends Controller
         $wargaPerRt = $rtWargaGrouping;
         $kkPerRt = $rtGrouping;
 
-        return view('dashboard', compact('user', 'stats', 'chartLabels', 'chartData', 'wargaChart', 'mutasiChart', 'keuanganPemasukan', 'keuanganPengeluaran', 'tableRows', 'rtGrouping', 'rtWargaGrouping', 'wargaPerRt', 'kkPerRt', 'saldo'));
+        return view('dashboard', compact('user', 'stats', 'chartLabels', 'chartData', 'wargaChart', 'mutasiChart', 'keuanganPemasukan', 'keuanganPengeluaran', 'tableRows', 'rtGrouping', 'rtWargaGrouping', 'wargaPerRt', 'kkPerRt', 'saldo','inventarisKategoriLabels','inventarisKategoriData','inventarisKondisiLabels','inventarisKondisiData','peminjamanStatusLabels','peminjamanStatusData'));
     }
 }

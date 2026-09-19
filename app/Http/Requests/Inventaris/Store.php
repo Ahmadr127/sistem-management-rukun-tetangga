@@ -21,6 +21,8 @@ class Store extends FormRequest
             'sumber_dana' => 'nullable|string|max:255',
             'tanggal_pengadaan' => 'nullable|date',
             'keterangan' => 'nullable|string',
+            'foto' => 'nullable|array',
+            'foto.*' => 'image|mimes:jpg,jpeg,png,webp|max:3072',
         ];
     }
 }

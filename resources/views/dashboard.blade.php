@@ -142,7 +142,56 @@
             />
         </x-card>
     </div>
-    <x-card title="Tren Pengguna" subtitle="Pengguna baru dalam 6 bulan terakhir">
+
+    <!-- Inventaris Diagram -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <!-- <x-card title="Inventaris per Kategori" subtitle="Total unit per kategori">
+            @if(empty($inventarisKategoriLabels))
+                <div class="h-[260px] flex items-center justify-center text-sm text-gray-500">Belum ada data inventaris</div>
+            @else
+                <x-chart
+                    type="bar"
+                    :labels="$inventarisKategoriLabels"
+                    :datasets="[
+                        ['label' => 'Unit', 'data' => $inventarisKategoriData, 'backgroundColor' => '#f59e0b', 'borderRadius' => 6],
+                    ]"
+                    :height="260"
+                    :options="['plugins' => ['legend' => ['display' => false]], 'scales' => ['y' => ['beginAtZero' => true, 'ticks' => ['precision' => 0]]]]"
+                />
+            @endif
+        </x-card> -->
+        <x-card title="Inventaris per Kondisi" subtitle="Jumlah jenis per kondisi">
+            @if(empty($inventarisKondisiLabels))
+                <div class="h-[260px] flex items-center justify-center text-sm text-gray-500">Belum ada data</div>
+            @else
+                <x-chart
+                    type="doughnut"
+                    :labels="$inventarisKondisiLabels"
+                    :datasets="[
+                        ['label' => 'Jenis', 'data' => $inventarisKondisiData, 'backgroundColor' => ['#16a34a','#facc15','#f97316','#dc2626','#6b7280'], 'borderWidth' => 2],
+                    ]"
+                    :height="260"
+                    :options="['plugins' => ['legend' => ['position' => 'bottom', 'labels' => ['padding' => 14, 'boxWidth' => 12]]]]"
+                />
+            @endif
+        </x-card>
+        <x-card title="Peminjaman per Status" subtitle="Distribusi status peminjaman">
+            @if(empty($peminjamanStatusLabels))
+                <div class="h-[260px] flex items-center justify-center text-sm text-gray-500">Belum ada peminjaman</div>
+            @else
+                <x-chart
+                    type="doughnut"
+                    :labels="$peminjamanStatusLabels"
+                    :datasets="[
+                        ['label' => 'Peminjaman', 'data' => $peminjamanStatusData, 'backgroundColor' => ['#f59e0b','#16a34a','#dc2626','#6b7280','#fb923c'], 'borderWidth' => 2],
+                    ]"
+                    :height="260"
+                    :options="['plugins' => ['legend' => ['position' => 'bottom', 'labels' => ['padding' => 14, 'boxWidth' => 12]]]]"
+                />
+            @endif
+        </x-card>
+    </div>
+    <!-- <x-card title="Tren Pengguna" subtitle="Pengguna baru dalam 6 bulan terakhir">
         <x-chart
             type="line"
             :labels="$chartLabels"
@@ -158,10 +207,10 @@
             ]]"
             :height="260"
         />
-    </x-card>
+    </x-card> -->
 
     <!-- Searchable Table (pencarian per kolom di baris pertama) -->
-    <x-card title="Data Pengguna" subtitle="Ketik di kolom pencarian untuk memfilter data">
+    <!-- <x-card title="Data Pengguna" subtitle="Ketik di kolom pencarian untuk memfilter data">
         <x-searchable-table
             :columns="[
                 ['key' => 'name', 'label' => 'Nama'],
@@ -174,6 +223,6 @@
             :rows="$tableRows"
             :per-page="8"
         />
-    </x-card>
+    </x-card> -->
 </div>
 @endsection

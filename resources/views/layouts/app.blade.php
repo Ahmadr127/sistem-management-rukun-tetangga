@@ -78,7 +78,7 @@
                         @foreach($visible as $item)
                             @if(isset($item['children']))
                                 @php
-                                    $childPatterns = array_column($item['children'], 'route_pattern');
+                                    $childPatterns = collect($item['children'])->pluck('route_pattern')->flatMap(fn($p) => is_array($p) ? $p : [$p])->toArray();
                                     $isOpen = request()->routeIs($childPatterns);
                                 @endphp
                                 <div class="mb-1" x-data="{ open: {{ $isOpen ? 'true' : 'false' }} }">
@@ -102,7 +102,7 @@
                                         @foreach($item['children'] as $child)
                                             @if($canAccess($child))
                                             <a href="{{ route($child['route']) }}" 
-                                               class="{{ request()->routeIs($child['route_pattern']) ? 'active' : '' }}"
+                                               class="{{ request()->routeIs((array)$child['route_pattern']) ? 'active' : '' }}"
                                                title="{{ $child['label'] }}">
                                                 <i class="bi {{ $child['icon'] }} sidebar-icon"></i>
                                                 <span class="sidebar-text">{{ $child['label'] }}</span>

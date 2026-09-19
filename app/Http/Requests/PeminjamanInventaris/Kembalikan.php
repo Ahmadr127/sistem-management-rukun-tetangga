@@ -14,6 +14,8 @@ class Kembalikan extends FormRequest
             'status' => 'nullable|in:DIKEMBALIKAN,HILANG,RUSAK',
             'kondisi_kembali' => 'nullable|string',
             'keterangan' => 'nullable|string',
+            'foto_kembali' => 'nullable|array',
+            'foto_kembali.*' => 'image|mimes:jpg,jpeg,png,webp|max:3072',
         ];
     }
 }
