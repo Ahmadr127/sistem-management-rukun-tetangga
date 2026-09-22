@@ -9,7 +9,7 @@
         <div class="w-full max-w-md">
             <!-- Mobile Logo -->
             <div class="lg:hidden flex flex-col items-center mb-8">
-                <div class="rounded-2xl border border-green-200 bg-white shadow-md p-4 mb-3">
+                <div class="rounded-2xl border border-primary-200 bg-white shadow-md p-4 mb-3">
                     <img src="{{ site_logo_url() }}" alt="Logo" class="h-16 object-contain" />
                 </div>
                 <h2 class="text-2xl font-bold text-gray-800">{{ setting('site_short_name', 'SI-RT') }}</h2>
@@ -31,7 +31,7 @@
                     <!-- Email atau Username -->
                     <div>
                         <label for="login" class="block text-sm font-semibold text-gray-700 mb-2">
-                            <i class="fas fa-user mr-2 text-green-600"></i>Email atau Username
+                            <i class="fas fa-user mr-2 text-primary"></i>Email atau Username
                         </label>
                         <input 
                             id="login" 
@@ -40,14 +40,14 @@
                             required 
                             placeholder="Masukkan email atau username Anda" 
                             value="{{ old('login') }}"
-                            class="w-full rounded-xl border-2 border-gray-200 px-4 py-3 bg-white text-gray-900 shadow-sm outline-none transition focus:ring-4 focus:ring-green-500/20 focus:border-green-600 hover:border-gray-300"
+                            class="w-full rounded-xl border-2 border-gray-200 px-4 py-3 bg-white text-gray-900 shadow-sm outline-none transition focus:ring-4 focus:ring-primary/20 focus:border-primary hover:border-gray-300"
                         />
                     </div>
 
                     <!-- Password -->
                     <div>
                         <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
-                            <i class="fas fa-lock mr-2 text-green-600"></i>Password
+                            <i class="fas fa-lock mr-2 text-primary"></i>Password
                         </label>
                         <div class="relative">
                             <input 
@@ -56,13 +56,13 @@
                                 type="password" 
                                 required 
                                 placeholder="Masukkan password Anda"
-                                class="w-full rounded-xl border-2 border-gray-200 px-4 py-3 pr-12 bg-white text-gray-900 shadow-sm outline-none transition focus:ring-4 focus:ring-green-500/20 focus:border-green-600 hover:border-gray-300"
+                                class="w-full rounded-xl border-2 border-gray-200 px-4 py-3 pr-12 bg-white text-gray-900 shadow-sm outline-none transition focus:ring-4 focus:ring-primary/20 focus:border-primary hover:border-gray-300"
                             />
                             <button 
                                 type="button" 
                                 id="togglePassword" 
                                 aria-label="Show password" 
-                                class="absolute inset-y-0 right-0 px-4 text-gray-400 hover:text-green-600 focus:outline-none transition"
+                                class="absolute inset-y-0 right-0 px-4 text-gray-400 hover:text-primary focus:outline-none transition"
                             >
                                 <i class="fa-solid fa-eye"></i>
                             </button>
@@ -72,10 +72,10 @@
                     <!-- Remember & Forgot -->
                     <div class="flex items-center justify-between">
                         <label class="flex items-center">
-                            <input type="checkbox" name="remember" class="rounded border-gray-300 text-green-600 shadow-sm focus:ring-green-500">
+                            <input type="checkbox" name="remember" class="rounded border-gray-300 text-primary shadow-sm focus:ring-primary">
                             <span class="ml-2 text-sm text-gray-600">Ingat saya</span>
                         </label>
-                        <a href="#" class="text-sm font-medium text-green-600 hover:text-green-700">Lupa password?</a>
+                        <a href="#" class="text-sm font-medium text-primary hover:text-primary-700">Lupa password?</a>
                     </div>
 
                     <!-- Error Messages -->
@@ -98,7 +98,7 @@
                     <!-- Submit Button -->
                     <button 
                         type="submit" 
-                        class="w-full rounded-xl bg-gradient-to-r from-green-600 to-green-700 text-white font-bold py-3.5 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-green-500/50"
+                        class="w-full rounded-xl bg-gradient-to-r from-primary to-primary-700 text-white font-bold py-3.5 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-primary/50"
                     >
                         <i class="fas fa-sign-in-alt mr-2"></i>
                         Masuk
@@ -114,7 +114,7 @@
     </div>
 
     <!-- Right Side - Branding -->
-    <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-green-600 via-green-700 to-green-800 relative overflow-hidden">
+    <div class="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary to-primary-700 border-l border-primary-800 relative overflow-hidden">
         <!-- Decorative Elements -->
         <div class="absolute inset-0 opacity-10">
             <div class="absolute top-0 left-0 w-96 h-96 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"></div>
@@ -130,7 +130,7 @@
 
             <!-- App Name -->
             <h1 class="text-5xl font-bold mb-4 text-center">{{ setting('site_short_name', 'SI-RT') }}</h1>
-            <p class="text-xl text-green-100 text-center max-w-md">
+            <p class="text-xl text-primary-200 text-center max-w-md">
                 {{ setting('site_name', 'Sistem Manajemen Rukun Tetangga') }}
             </p>
         </div>

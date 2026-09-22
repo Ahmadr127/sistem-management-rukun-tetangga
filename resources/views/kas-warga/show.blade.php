@@ -92,12 +92,12 @@
 
         {{-- Matriks --}}
         <div class="overflow-x-auto">
-            <table class="border-separate w-full text-sm" style="min-width: max-content; border-spacing: 0">
+            <table class=" w-full text-sm border-0 border-collapse " style="min-width: max-content;">
                 <thead>
                     <tr class="bg-slate-800 text-white">
-                        <th class="sticky top-0 left-0 z-30 bg-slate-800 px-3 py-2 text-left font-semibold w-12 max-w-12">No</th>
-                        <th class="sticky top-0 left-12 z-30 bg-slate-800 px-3 py-2 text-left font-semibold w-[190px] max-w-[190px]">{{ $isKk ? 'Kepala Keluarga' : 'Nama Warga' }}</th>
-                        <th class="sticky top-0 z-30 bg-slate-800 px-3 py-2 text-left font-semibold w-[150px] max-w-[150px]" style="left: 238px">{{ $isKk ? 'No KK / NIK' : 'NIK' }}</th>
+                        <th class="sticky top-0 left-0 z-30 bg-slate-800 px-3 py-2 text-left font-semibold w-[48px] min-w-[48px] max-w-[48px]">No</th>
+                        <th class="sticky top-0 z-30 bg-slate-800 px-3 py-2 text-left font-semibold w-[190px] min-w-[190px] max-w-[190px]" style="left: 48px">{{ $isKk ? 'Kepala Keluarga' : 'Nama Warga' }}</th>
+                        <th class="sticky top-0 z-30 bg-slate-800 px-3 py-2 text-left font-semibold w-[150px] min-w-[150px] max-w-[150px] shadow-[4px_0_6px_-2px_rgba(0,0,0,0.35)]" style="left: 238px">{{ $isKk ? 'No KK / NIK' : 'NIK' }}</th>
                         @foreach($columns as $col)
                         <th class="sticky top-0 z-10 px-1 py-1.5 text-center font-semibold min-w-[46px] {{ ($col['is_today'] ?? false) ? 'bg-green-600' : (($col['is_weekend'] ?? false) ? 'bg-slate-700' : 'bg-slate-800') }}" title="{{ $col['full'] }}">
                             <div class="text-[11px] leading-tight">{{ $col['label'] }}</div>
@@ -126,12 +126,12 @@
                         $no = ($rows->currentPage()-1)*$rows->perPage() + $loop->iteration;
                     @endphp
                     <tr class="group hover:bg-green-50/40">
-                        <td class="sticky left-0 z-[1] bg-white group-hover:bg-green-50 px-3 py-1.5 border-b border-gray-100 max-w-12 overflow-hidden">{{ $no }}</td>
-                        <td class="sticky left-12 z-[1] bg-white group-hover:bg-green-50 px-3 py-1.5 font-medium border-b border-gray-100 w-[190px] max-w-[190px] break-words">
+                        <td class="sticky left-0 z-[1] bg-white group-hover:bg-green-50 px-3 py-1.5 border-b border-gray-100 w-[48px] min-w-[48px] max-w-[48px] overflow-hidden">{{ $no }}</td>
+                        <td class="sticky z-[1] bg-white group-hover:bg-green-50 px-3 py-1.5 font-medium border-b border-gray-100 w-[190px] min-w-[190px] max-w-[190px] break-words" style="left: 48px">
                             {{ $namaSubjek }}
                             @if($isKk && $row->anggota->count())<span class="ml-1 text-[10px] px-1.5 py-0.5 bg-slate-100 rounded-full text-slate-600">{{ $row->anggota->count() }} jiwa</span>@endif
                         </td>
-                        <td class="sticky z-[1] bg-white group-hover:bg-green-50 px-3 py-1.5 font-mono text-xs whitespace-nowrap border-b border-gray-100 w-[150px] max-w-[150px] overflow-hidden" style="left: 238px">
+                        <td class="sticky z-[1] bg-white group-hover:bg-green-50 px-3 py-1.5 font-mono text-xs whitespace-nowrap border-b border-gray-100 w-[150px] min-w-[150px] max-w-[150px] overflow-hidden shadow-[2px_0_4px_rgba(0,0,0,0.12)]" style="left: 238px">
                             @if($isKk)<div>{{ $row->no_kk }}</div><div class="text-gray-500">NIK: {{ $nikSubjek }}</div>
                             @else{{ $nikSubjek }}@endif
                         </td>
