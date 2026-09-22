@@ -189,19 +189,19 @@ Route::middleware('auth')->group(function () {
         Route::delete('rts/{rt}', [RtController::class, 'destroy'])->name('rts.destroy');
     });
 
-    // Kas Warga routes
+    // Kas Warga routes (Jenis Kas + ledger matriks tanggal)
     Route::middleware('permission:view_kas')->group(function () {
         Route::get('kas-warga', [KasWargaController::class, 'index'])->name('kas-warga.index');
-        Route::get('kas-warga/{kasWarga}', [KasWargaController::class, 'show'])->name('kas-warga.show');
+        Route::get('kas-warga/{kasJenis}', [KasWargaController::class, 'show'])->name('kas-warga.show');
     });
     Route::middleware('permission:manage_kas')->group(function () {
         Route::get('kas-warga-create', [KasWargaController::class, 'create'])->name('kas-warga.create');
         Route::post('kas-warga', [KasWargaController::class, 'store'])->name('kas-warga.store');
-        Route::post('kas-warga/generate', [KasWargaController::class, 'generate'])->name('kas-warga.generate');
-        Route::get('kas-warga/{kasWarga}/edit', [KasWargaController::class, 'edit'])->name('kas-warga.edit');
-        Route::put('kas-warga/{kasWarga}', [KasWargaController::class, 'update'])->name('kas-warga.update');
-        Route::delete('kas-warga/{kasWarga}', [KasWargaController::class, 'destroy'])->name('kas-warga.destroy');
-        Route::get('api/warga-by-rt', [KasWargaController::class, 'wargaByRt'])->name('api.warga-by-rt');
+        Route::get('kas-warga/{kasJenis}/edit', [KasWargaController::class, 'edit'])->name('kas-warga.edit');
+        Route::put('kas-warga/{kasJenis}', [KasWargaController::class, 'update'])->name('kas-warga.update');
+        Route::delete('kas-warga/{kasJenis}', [KasWargaController::class, 'destroy'])->name('kas-warga.destroy');
+        Route::post('kas-warga/{kasJenis}/bayar', [KasWargaController::class, 'bayar'])->name('kas-warga.bayar');
+        Route::delete('kas-warga-bayar/{pembayaran}', [KasWargaController::class, 'batalBayar'])->name('kas-warga.batal-bayar');
     });
 
     // Alamat RT routes

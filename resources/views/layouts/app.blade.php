@@ -73,7 +73,7 @@
                 @foreach($menuGroups as $group)
                     @php $visible = array_values(array_filter($group['menus'], $canAccess)); @endphp
                     @if(count($visible) > 0)
-                        <p class="sidebar-title">{{ $group['title'] }}</p>
+                        {{-- <p class="sidebar-title">{{ $group['title'] }}</p> --}}
 
                         @foreach($visible as $item)
                             @if(isset($item['children']))

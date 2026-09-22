@@ -18,7 +18,6 @@
 
 return [
     [
-        'title' => 'Menu Utama',
         'menus' => [
             [
                 'label' => 'Dashboard',
@@ -30,7 +29,6 @@ return [
         ],
     ],
     [
-        'title' => 'Pengaturan',
         'menus' => [
             [
                 'label' => 'RT',
@@ -84,7 +82,6 @@ return [
         ],
     ],
     [
-        'title' => 'Kependudukan',
         'menus' => [
             [
                 'label' => 'Data Warga',
@@ -110,7 +107,6 @@ return [
         ],
     ],
     [
-        'title' => 'Keuangan',
         'menus' => [
             [
                 'label' => 'Keuangan',
@@ -150,7 +146,6 @@ return [
         ],
     ],
     [
-        'title' => 'Inventaris',
         'menus' => [
             [
                 'label' => 'Inventaris',
@@ -183,7 +178,6 @@ return [
         ],
     ],
     [
-        'title' => 'Organisasi',
         'menus' => [
             [
                 'label' => 'Organisasi',
@@ -209,7 +203,6 @@ return [
         ],
     ],
     [
-        'title' => 'Laporan',
         'menus' => [
             [
                 'label' => 'Audit Log',

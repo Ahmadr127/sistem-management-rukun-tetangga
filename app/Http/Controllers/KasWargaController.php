@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\KasWarga\Generate;
+use App\Http\Requests\KasWarga\Bayar;
 use App\Http\Requests\KasWarga\Store;
 use App\Http\Requests\KasWarga\Update;
 use App\Http\Services\KasWargaService;
-use App\Models\KasWarga;
+use App\Models\KasJenis;
+use App\Models\KasPembayaran;
 use App\Models\Rt;
 use Illuminate\Http\Request;
 
@@ -14,69 +15,71 @@ class KasWargaController extends Controller
 {
     public function __construct(protected KasWargaService $kasService) {}
 
+    /** Daftar master jenis kas */
     public function index(Request $request)
     {
-        $kas = $this->kasService->getKasWarga($request->only(['search','rt_id','periode_type','periode','status','warga_id','per_page']));
+        $jenis = $this->kasService->getJenis($request->only(['search', 'rt_id', 'periode_type', 'target_type', 'is_active', 'per_page']));
         $rts = Rt::active()->orderBy('kode_rt')->get();
-        $periodes = KasWarga::distinct()->orderBy('periode','desc')->pluck('periode');
-        return view('kas-warga.index', compact('kas','rts','periodes'));
+        return view('kas-warga.index', compact('jenis', 'rts'));
     }
 
+    /** Form tambah jenis kas */
     public function create(Request $request)
     {
         $rts = Rt::active()->orderBy('kode_rt')->get();
         $selectedRt = $request->get('rt_id') ?? auth()->user()->rt_id;
-        $wargas = $selectedRt ? \App\Models\Warga::where('rt_id',$selectedRt)->where('status_warga','AKTIF')->orderBy('nama')->get() : collect();
-        // for superadmin initial, if no rt selected, empty; JS will load via API
-        return view('kas-warga.create', compact('rts','wargas','selectedRt'));
+        return view('kas-warga.create', compact('rts', 'selectedRt'));
     }
 
     public function store(Store $request)
     {
-        $this->kasService->createKas($request->validated());
-        return redirect()->route('kas-warga.index')->with('success','Kas warga berhasil ditambahkan!');
+        $jenis = $this->kasService->createJenis($request->validated());
+        return redirect()->route('kas-warga.show', $jenis)->with('success', 'Jenis kas berhasil ditambahkan! Silakan input pembayaran.');
     }
 
-    public function show(KasWarga $kasWarga)
+    /** Tabel ledger matriks: No, Nama KK/Warga, NIK + kolom tanggal */
+    public function show(Request $request, KasJenis $kasJenis)
     {
-        $user = auth()->user();
-        if ($user && !$user->isSuperAdmin() && (int)$kasWarga->rt_id !== (int)$user->rt_id) abort(403);
-        $kasWarga->load(['warga','rt','creator']);
-        return view('kas-warga.show', compact('kasWarga'));
+        $kasJenis->load(['rt']);
+        $ledger = $this->kasService->getLedger($kasJenis, $request->only(['mode', 'bulan', 'minggu', 'tahun', 'search', 'per_page']));
+        return view('kas-warga.show', array_merge(['kasJenis' => $kasJenis], $ledger));
     }
 
-    public function edit(KasWarga $kasWarga)
+    public function edit(KasJenis $kasJenis)
     {
-        $user = auth()->user();
-        if ($user && !$user->isSuperAdmin() && (int)$kasWarga->rt_id !== (int)$user->rt_id) abort(403);
+        $this->kasService->assertJenisAccess($kasJenis);
         $rts = Rt::active()->orderBy('kode_rt')->get();
-        $wargas = \App\Models\Warga::where('rt_id',$kasWarga->rt_id)->where('status_warga','AKTIF')->orderBy('nama')->get();
-        return view('kas-warga.edit', compact('kasWarga','rts','wargas'));
+        return view('kas-warga.edit', compact('kasJenis', 'rts'));
     }
 
-    public function update(Update $request, KasWarga $kasWarga)
+    public function update(Update $request, KasJenis $kasJenis)
     {
-        $this->kasService->updateKas($kasWarga, $request->validated());
-        return redirect()->route('kas-warga.index')->with('success','Kas warga berhasil diperbarui!');
+        $this->kasService->updateJenis($kasJenis, $request->validated());
+        return redirect()->route('kas-warga.index')->with('success', 'Jenis kas berhasil diperbarui!');
     }
 
-    public function destroy(KasWarga $kasWarga)
+    public function destroy(KasJenis $kasJenis)
     {
-        $this->kasService->deleteKas($kasWarga);
-        return redirect()->route('kas-warga.index')->with('success','Kas warga berhasil dihapus!');
+        $this->kasService->deleteJenis($kasJenis);
+        return redirect()->route('kas-warga.index')->with('success', 'Jenis kas beserta seluruh pembayarannya berhasil dihapus!');
     }
 
-    public function generate(Generate $request)
+    /** Simpan pembayaran dari modal klik tanggal (waktu otomatis sekarang) */
+    public function bayar(Bayar $request, KasJenis $kasJenis)
     {
-        $created = $this->kasService->generateKas($request->validated());
-        return redirect()->route('kas-warga.index')->with('success',"Generate berhasil: $created record kas dibuat.");
+        $this->kasService->bayar($kasJenis, $request->validated());
+        return redirect()
+            ->route('kas-warga.show', array_merge(['kasJenis' => $kasJenis->id], $request->only(['mode', 'bulan', 'minggu', 'tahun', 'search'])))
+            ->with('success', 'Pembayaran berhasil disimpan!');
     }
 
-    public function wargaByRt(Request $request)
+    /** Batalkan pembayaran (kembalikan sel menjadi belum bayar) */
+    public function batalBayar(Request $request, KasPembayaran $pembayaran)
     {
-        $rtId = $request->get('rt_id');
-        if (!$rtId) return response()->json([]);
-        $wargas = $this->kasService->getWargaByRt($rtId);
-        return response()->json($wargas);
+        $kasJenisId = $pembayaran->kas_jenis_id;
+        $this->kasService->batalBayar($pembayaran);
+        return redirect()
+            ->route('kas-warga.show', array_merge(['kasJenis' => $kasJenisId], $request->only(['mode', 'bulan', 'minggu', 'tahun', 'search'])))
+            ->with('success', 'Pembayaran dibatalkan.');
     }
 }

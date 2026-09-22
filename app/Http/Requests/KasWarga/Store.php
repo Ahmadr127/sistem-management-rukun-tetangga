@@ -7,17 +7,24 @@ use Illuminate\Foundation\Http\FormRequest;
 class Store extends FormRequest
 {
     public function authorize(): bool { return true; }
+
     public function rules(): array
     {
         return [
             'rt_id' => 'nullable|exists:rts,id',
-            'warga_id' => 'required|exists:warga,id',
-            'periode_type' => 'required|in:weekly,monthly',
-            'periode' => 'required|string|max:20',
+            'nama' => 'required|string|max:100',
+            'periode_type' => 'required|in:weekly,monthly,yearly',
             'nominal' => 'required|numeric|min:0',
-            'tanggal_bayar' => 'nullable|date',
-            'status' => 'required|in:belum_bayar,sudah_bayar',
-            'catatan' => 'nullable|string|max:500',
+            'target_type' => 'required|in:kk,perorangan',
+            'deskripsi' => 'nullable|string|max:1000',
+            'is_active' => 'nullable|boolean',
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'is_active' => $this->boolean('is_active', true),
+        ]);
     }
 }
