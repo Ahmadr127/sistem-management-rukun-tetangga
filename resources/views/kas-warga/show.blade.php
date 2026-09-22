@@ -24,18 +24,10 @@
             </a>
             @endif
         </x-slot>
-        <div class="px-4 py-3 grid grid-cols-2 md:grid-cols-5 gap-3 bg-gray-50 border-b border-gray-100">
+        <div class="px-4 py-3 grid grid-cols-2 md:grid-cols-3 gap-3 bg-gray-50 border-b border-gray-100">
             <div class="bg-white border rounded-lg px-3 py-2">
                 <div class="text-[11px] font-semibold text-gray-500 uppercase">{{ $isKk ? 'Total KK' : 'Total Warga' }}</div>
                 <div class="text-xl font-bold text-slate-800">{{ $stats['total_subjek'] }}</div>
-            </div>
-            <div class="bg-white border rounded-lg px-3 py-2">
-                <div class="text-[11px] font-semibold text-gray-500 uppercase">Sudah Bayar (sel)</div>
-                <div class="text-xl font-bold text-green-700" id="statTerbayar">{{ $stats['terbayar'] }}</div>
-            </div>
-            <div class="bg-white border rounded-lg px-3 py-2">
-                <div class="text-[11px] font-semibold text-gray-500 uppercase">Belum Bayar (sel)</div>
-                <div class="text-xl font-bold text-amber-600" id="statBelum">{{ $stats['belum'] }}</div>
             </div>
             <div class="bg-white border rounded-lg px-3 py-2">
                 <div class="text-[11px] font-semibold text-gray-500 uppercase">Terkumpul</div>
