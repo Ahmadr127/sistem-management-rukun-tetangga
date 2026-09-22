@@ -18,6 +18,7 @@ use App\Http\Controllers\PeminjamanInventarisController;
 use App\Http\Controllers\RtController;
 use App\Http\Controllers\KasWargaController;
 use App\Http\Controllers\AlamatRtController;
+use App\Http\Controllers\SettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -215,6 +216,19 @@ Route::middleware('auth')->group(function () {
         Route::get('alamat-rt/{alamatRt}/edit', [AlamatRtController::class, 'edit'])->name('alamat-rt.edit');
         Route::put('alamat-rt/{alamatRt}', [AlamatRtController::class, 'update'])->name('alamat-rt.update');
         Route::delete('alamat-rt/{alamatRt}', [AlamatRtController::class, 'destroy'])->name('alamat-rt.destroy');
+    });
+
+    // Pengaturan Sistem routes (logo & nama sistem + CRUD pengaturan)
+    Route::middleware('permission:view_settings')->group(function () {
+        Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::get('settings/{setting}', [SettingController::class, 'show'])->name('settings.show');
+    });
+    Route::middleware('permission:manage_settings')->group(function () {
+        Route::get('settings-create', [SettingController::class, 'create'])->name('settings.create');
+        Route::post('settings', [SettingController::class, 'store'])->name('settings.store');
+        Route::get('settings/{setting}/edit', [SettingController::class, 'edit'])->name('settings.edit');
+        Route::put('settings/{setting}', [SettingController::class, 'update'])->name('settings.update');
+        Route::delete('settings/{setting}', [SettingController::class, 'destroy'])->name('settings.destroy');
     });
 
 });

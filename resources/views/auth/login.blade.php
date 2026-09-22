@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'Login - Sistem')
+@section('title', 'Login - ' . setting('site_short_name', 'SI-RT'))
 
 @section('content')
 <div class="min-h-screen w-full flex">
@@ -10,10 +10,10 @@
             <!-- Mobile Logo -->
             <div class="lg:hidden flex flex-col items-center mb-8">
                 <div class="rounded-2xl border border-green-200 bg-white shadow-md p-4 mb-3">
-                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-16 object-contain" />
+                    <img src="{{ site_logo_url() }}" alt="Logo" class="h-16 object-contain" />
                 </div>
-                <h2 class="text-2xl font-bold text-gray-800">Sistem</h2>
-                <p class="text-sm text-gray-600">Sistem Starterpack</p>
+                <h2 class="text-2xl font-bold text-gray-800">{{ setting('site_short_name', 'SI-RT') }}</h2>
+                <p class="text-sm text-gray-600">{{ setting('site_name', 'Sistem Manajemen Rukun Tetangga') }}</p>
             </div>
 
             <!-- Login Card -->
@@ -107,7 +107,7 @@
 
                 <!-- Footer -->
                 <div class="mt-6 text-center text-sm text-gray-500">
-                    <p>© {{ date('Y') }} Sistem. All rights reserved.</p>
+                    <p>© {{ date('Y') }} {{ setting('site_short_name', 'SI-RT') }}. All rights reserved.</p>
                 </div>
             </div>
         </div>
@@ -125,13 +125,13 @@
         <div class="relative z-10 flex flex-col items-center justify-center w-full px-12 text-white">
             <!-- Logo -->
             <div class="mb-8 bg-white rounded-3xl shadow-2xl p-8">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-32 w-32 object-contain" />
+                <img src="{{ site_logo_url() }}" alt="Logo" class="h-32 w-32 object-contain" />
             </div>
 
             <!-- App Name -->
-            <h1 class="text-5xl font-bold mb-4 text-center">Sistem</h1>
+            <h1 class="text-5xl font-bold mb-4 text-center">{{ setting('site_short_name', 'SI-RT') }}</h1>
             <p class="text-xl text-green-100 text-center max-w-md">
-                Sistem Starterpack
+                {{ setting('site_name', 'Sistem Manajemen Rukun Tetangga') }}
             </p>
         </div>
     </div>

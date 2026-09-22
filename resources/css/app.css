@@ -17,6 +17,21 @@
     --color-sp-hover: rgba(37, 57, 111, 0.05);
     --color-sp-submenu-hover: #f0f1f5;
     --shadow-sp-active: 0 4px 12px rgba(0, 119, 116, 0.2);
+
+    /*
+     * Palet "primary / secondary" ala referensi D-ASSA.
+     * Basis primary = sp-primary agar selaras dengan tema SI-RT,
+     * shade-nya melengkapi class referensi: from-primary,
+     * to-primary-700, border-primary-800/600, text-primary-200,
+     * hover:bg-primary-700, border-secondary, text-secondary-200.
+     */
+    --color-primary: #007774;
+    --color-primary-200: #a7d8d6;
+    --color-primary-600: #00706d;
+    --color-primary-700: #006663;
+    --color-primary-800: #005251;
+    --color-secondary: #f59e0b;
+    --color-secondary-200: #fde68a;
 }
 
 @layer base {
@@ -27,20 +42,20 @@
 }
 
 @layer components {
-    /* Brand (Simmutu header font) */
+    /* Brand di atas sidebar hijau */
     .sidebar-brand-text {
-        @apply text-[1.7rem] font-bold text-sp-navy;
+        @apply text-[1.7rem] font-bold text-white;
     }
 
-    /* Group titles (Simmutu: 1rem, 1.5rem/1rem margins) */
+    /* Group titles */
     .sidebar-title {
-        @apply px-4 mt-6 mb-4 text-[1rem] font-semibold text-sp-navy;
+        @apply px-4 mt-6 mb-4 text-[1rem] font-semibold text-primary-200;
     }
 
-    /* Main links & dropdown buttons (Simmutu: 0.75rem 1rem, 0.95rem) */
+    /* Main links & dropdown buttons (teks putih di atas hijau) */
     .sidebar-link,
     .sidebar-btn {
-        @apply flex items-center gap-3 py-3 px-4 text-sp-navy text-[0.95rem] font-semibold rounded-lg transition-all duration-150;
+        @apply flex items-center gap-3 py-3 px-4 text-white/85 text-[0.95rem] font-semibold rounded-lg transition-all duration-150;
     }
 
     .sidebar-btn {
@@ -59,61 +74,61 @@
 
     .sidebar-link i,
     .sidebar-btn i {
-        @apply text-sp-icon text-[1.2rem] leading-none transition-all duration-150;
+        @apply text-white/70 text-[1.2rem] leading-none transition-all duration-150;
     }
 
     .sidebar-link:hover,
     .sidebar-btn:hover {
-        @apply bg-sp-hover text-sp-primary;
+        @apply bg-white/10 text-white;
     }
 
     .sidebar-link:hover i,
     .sidebar-btn:hover i {
-        @apply text-sp-primary scale-110;
+        @apply text-secondary-200 scale-110;
     }
 
     .sidebar-link.active,
     .sidebar-btn.active {
-        @apply bg-sp-primary text-white shadow-sp-active;
+        @apply bg-white text-primary shadow-md;
     }
 
     .sidebar-link.active i,
     .sidebar-btn.active i {
-        @apply text-white;
+        @apply text-primary;
     }
 
     /* Submenu (Simmutu: 0.6rem 1.7rem, 0.85rem) */
     .sidebar-submenu a {
-        @apply flex items-center gap-3 px-[1.7rem] py-[0.6rem] my-[0.2rem] text-sp-navy text-[0.85rem] font-semibold tracking-wide rounded-lg transition-all duration-200;
+        @apply flex items-center gap-3 px-[1.7rem] py-[0.6rem] my-[0.2rem] text-white/80 text-[0.85rem] font-semibold tracking-wide rounded-lg transition-all duration-200;
     }
 
     .sidebar-submenu a i {
-        @apply text-sp-icon text-[1rem] transition-colors duration-200;
+        @apply text-white/60 text-[1rem] transition-colors duration-200;
     }
 
     .sidebar-submenu a:hover {
-        @apply bg-sp-submenu-hover text-sp-primary;
+        @apply bg-white/10 text-white;
     }
 
     .sidebar-submenu a:hover i {
-        @apply text-sp-primary;
+        @apply text-secondary-200;
     }
 
     .sidebar-submenu a.active {
-        @apply bg-sp-primary text-white;
+        @apply bg-white text-primary;
     }
 
     .sidebar-submenu a.active i {
-        @apply text-white;
+        @apply text-primary;
     }
 
     /* Chevron indicator */
     .sidebar-chevron {
-        @apply text-[0.7rem] text-sp-icon;
+        @apply text-[0.7rem] text-white/60;
     }
 
     .sidebar-link:hover .sidebar-chevron,
     .sidebar-btn:hover .sidebar-chevron {
-        @apply text-sp-primary;
+        @apply text-secondary-200;
     }
 }

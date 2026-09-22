@@ -31,20 +31,20 @@
             </div>
             <div class="bg-white border rounded-lg px-3 py-2">
                 <div class="text-[11px] font-semibold text-gray-500 uppercase">Sudah Bayar (sel)</div>
-                <div class="text-xl font-bold text-green-700">{{ $stats['terbayar'] }}</div>
+                <div class="text-xl font-bold text-green-700" id="statTerbayar">{{ $stats['terbayar'] }}</div>
             </div>
             <div class="bg-white border rounded-lg px-3 py-2">
                 <div class="text-[11px] font-semibold text-gray-500 uppercase">Belum Bayar (sel)</div>
-                <div class="text-xl font-bold text-amber-600">{{ $stats['belum'] }}</div>
+                <div class="text-xl font-bold text-amber-600" id="statBelum">{{ $stats['belum'] }}</div>
             </div>
             <div class="bg-white border rounded-lg px-3 py-2">
                 <div class="text-[11px] font-semibold text-gray-500 uppercase">Terkumpul</div>
-                <div class="text-xl font-bold text-green-700">Rp {{ number_format($stats['rupiah'],0,',','.') }}</div>
+                <div class="text-xl font-bold text-green-700" id="statRupiah">Rp {{ number_format($stats['rupiah'],0,',','.') }}</div>
             </div>
             <div class="bg-white border rounded-lg px-3 py-2">
                 <div class="text-[11px] font-semibold text-gray-500 uppercase">Progres {{ $nav['title'] }}</div>
-                <div class="text-xl font-bold text-slate-800">{{ $stats['persen'] }}%</div>
-                <div class="h-1.5 bg-gray-200 rounded-full mt-1 overflow-hidden"><div class="h-full bg-green-500 rounded-full" style="width:{{ $stats['persen'] }}%"></div></div>
+                <div class="text-xl font-bold text-slate-800" id="statPersen">{{ $stats['persen'] }}%</div>
+                <div class="h-1.5 bg-gray-200 rounded-full mt-1 overflow-hidden"><div class="h-full bg-green-500 rounded-full" id="statPersenBar" style="width:{{ $stats['persen'] }}%"></div></div>
             </div>
         </div>
 
@@ -92,14 +92,14 @@
 
         {{-- Matriks --}}
         <div class="overflow-x-auto">
-            <table class="border-collapse w-full text-sm" style="min-width: max-content">
-                <thead class="sticky top-0">
+            <table class="border-separate w-full text-sm" style="min-width: max-content; border-spacing: 0">
+                <thead>
                     <tr class="bg-slate-800 text-white">
-                        <th class="sticky left-0 z-10 bg-slate-800 px-3 py-2 text-left font-semibold w-12">No</th>
-                        <th class="sticky left-12 z-10 bg-slate-800 px-3 py-2 text-left font-semibold min-w-[190px]">{{ $isKk ? 'Kepala Keluarga' : 'Nama Warga' }}</th>
-                        <th class="sticky bg-slate-800 px-3 py-2 text-left font-semibold min-w-[150px]" style="left: 238px">{{ $isKk ? 'No KK / NIK' : 'NIK' }}</th>
+                        <th class="sticky top-0 left-0 z-30 bg-slate-800 px-3 py-2 text-left font-semibold w-12 max-w-12">No</th>
+                        <th class="sticky top-0 left-12 z-30 bg-slate-800 px-3 py-2 text-left font-semibold w-[190px] max-w-[190px]">{{ $isKk ? 'Kepala Keluarga' : 'Nama Warga' }}</th>
+                        <th class="sticky top-0 z-30 bg-slate-800 px-3 py-2 text-left font-semibold w-[150px] max-w-[150px]" style="left: 238px">{{ $isKk ? 'No KK / NIK' : 'NIK' }}</th>
                         @foreach($columns as $col)
-                        <th class="px-1 py-1.5 text-center font-semibold min-w-[46px] {{ ($col['is_today'] ?? false) ? 'bg-green-600' : '' }} {{ ($col['is_weekend'] ?? false) ? 'bg-slate-700' : '' }}" title="{{ $col['full'] }}">
+                        <th class="sticky top-0 z-10 px-1 py-1.5 text-center font-semibold min-w-[46px] {{ ($col['is_today'] ?? false) ? 'bg-green-600' : (($col['is_weekend'] ?? false) ? 'bg-slate-700' : 'bg-slate-800') }}" title="{{ $col['full'] }}">
                             <div class="text-[11px] leading-tight">{{ $col['label'] }}</div>
                             <div class="text-[9px] font-normal opacity-75 leading-tight">{{ $col['sub'] }}</div>
                         </th>
@@ -125,13 +125,13 @@
                         }
                         $no = ($rows->currentPage()-1)*$rows->perPage() + $loop->iteration;
                     @endphp
-                    <tr class="border-t border-gray-100 hover:bg-green-50/40">
-                        <td class="sticky left-0 bg-white px-3 py-1.5">{{ $no }}</td>
-                        <td class="sticky left-12 bg-white px-3 py-1.5 font-medium whitespace-nowrap">
+                    <tr class="group hover:bg-green-50/40">
+                        <td class="sticky left-0 z-[1] bg-white group-hover:bg-green-50 px-3 py-1.5 border-b border-gray-100 max-w-12 overflow-hidden">{{ $no }}</td>
+                        <td class="sticky left-12 z-[1] bg-white group-hover:bg-green-50 px-3 py-1.5 font-medium border-b border-gray-100 w-[190px] max-w-[190px] break-words">
                             {{ $namaSubjek }}
                             @if($isKk && $row->anggota->count())<span class="ml-1 text-[10px] px-1.5 py-0.5 bg-slate-100 rounded-full text-slate-600">{{ $row->anggota->count() }} jiwa</span>@endif
                         </td>
-                        <td class="sticky bg-white px-3 py-1.5 font-mono text-xs whitespace-nowrap" style="left: 238px">
+                        <td class="sticky z-[1] bg-white group-hover:bg-green-50 px-3 py-1.5 font-mono text-xs whitespace-nowrap border-b border-gray-100 w-[150px] max-w-[150px] overflow-hidden" style="left: 238px">
                             @if($isKk)<div>{{ $row->no_kk }}</div><div class="text-gray-500">NIK: {{ $nikSubjek }}</div>
                             @else{{ $nikSubjek }}@endif
                         </td>
@@ -140,7 +140,7 @@
                             $lookupKey = $mode == 'tahun' ? $col['week'] : $col['key'];
                             $bayar = $payMap[$subId . '|' . $lookupKey] ?? null;
                         @endphp
-                        <td class="px-1 py-1 text-center border-l border-gray-100">
+                        <td class="px-1 py-1 text-center border-l border-b border-gray-100">
                             @if($bayar)
                                 @if($canManage)
                                 <button type="button"
@@ -201,6 +201,7 @@
         <p class="text-xs text-gray-500 mb-1" id="bayarSubject"></p>
         <p class="text-xs font-semibold text-green-700 mb-4" id="bayarTanggal"></p>
         <div id="bayarInfo" class="hidden mb-3 text-xs bg-green-50 border border-green-200 rounded-md px-3 py-2 text-green-800"></div>
+        <div id="bayarError" class="hidden mb-3 text-xs bg-red-50 border border-red-200 rounded-md px-3 py-2 text-red-700"></div>
         <form id="bayarForm" method="POST" action="{{ route('kas-warga.bayar', $kasJenis) }}" class="space-y-3">
             @csrf
             <input type="hidden" name="kartu_keluarga_id" id="f_kk">
@@ -229,12 +230,9 @@
                 <button type="button" id="btnBatalBayar" class="hidden px-4 py-1.5 text-sm bg-red-100 text-red-700 rounded-md font-semibold hover:bg-red-200">Batalkan Pembayaran</button>
                 <div class="flex gap-2 ml-auto">
                     <button type="button" onclick="closeBayarModal()" class="px-4 py-1.5 text-sm bg-gray-200 rounded-md">Batal</button>
-                    <button type="submit" class="px-4 py-1.5 text-sm bg-green-600 text-white rounded-md font-semibold">Simpan</button>
+                    <button type="submit" id="btnSimpanBayar" class="px-4 py-1.5 text-sm bg-green-600 text-white rounded-md font-semibold disabled:opacity-60">Simpan</button>
                 </div>
             </div>
-        </form>
-        <form id="hapusForm" method="POST" class="hidden">@csrf @method('DELETE')
-            <input type="hidden" name="mode" value="{{ $mode }}">
         </form>
     </div>
 </div>
@@ -247,6 +245,7 @@ function tickClock() {
 setInterval(tickClock, 1000); tickClock();
 
 function openBayarModal(btn) {
+    bayarTrigger = btn;
     const d = btn.dataset;
     const modal = document.getElementById('bayarModal');
     document.getElementById('bayarSubject').textContent = d.subject;
@@ -256,6 +255,7 @@ function openBayarModal(btn) {
     document.getElementById('f_warga').value = d.subjectKey === 'warga' ? d.subjectId : '';
     const info = document.getElementById('bayarInfo');
     const btnBatal = document.getElementById('btnBatalBayar');
+    hideBayarError();
     if (d.paid === '1') {
         document.getElementById('bayarTitle').textContent = 'Sudah Bayar — Ubah / Batalkan';
         document.getElementById('f_nominal').value = d.nominal;
@@ -263,13 +263,7 @@ function openBayarModal(btn) {
         info.classList.remove('hidden');
         info.textContent = 'Dibayar pada ' + d.waktu + ' sebesar Rp ' + Number(d.nominal).toLocaleString('id-ID') + '. Simpan untuk mengubah nominal, atau batalkan pembayaran.';
         btnBatal.classList.remove('hidden');
-        btnBatal.onclick = function() {
-            if (!confirm('Yakin batalkan pembayaran ini? Sel kembali menjadi belum bayar.')) return;
-            const f = document.getElementById('hapusForm');
-            const params = new URLSearchParams({ mode: '{{ $mode }}'@if(request('bulan')), bulan: '{{ request('bulan') }}'@endif @if(request('minggu')), minggu: '{{ request('minggu') }}'@endif @if(request('tahun')), tahun: '{{ request('tahun') }}'@endif @if(request('search')), search: @json(request('search'))@endif });
-            f.action = "{{ url('kas-warga-bayar') }}/" + d.pembayaranId + '?' + params.toString();
-            f.submit();
-        };
+        btnBatal.onclick = batalBayarAjax;
     } else {
         document.getElementById('bayarTitle').textContent = 'Input Pembayaran';
         document.getElementById('f_nominal').value = {{ (float) $kasJenis->nominal }};
@@ -282,6 +276,127 @@ function openBayarModal(btn) {
 function closeBayarModal() { document.getElementById('bayarModal').classList.add('hidden'); }
 document.getElementById('bayarModal')?.addEventListener('click', function(e) { if (e.target === this) closeBayarModal(); });
 document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeBayarModal(); });
+
+/* ---------- Dinamis (AJAX): simpan & batal tanpa reload ---------- */
+let bayarTrigger = null;
+
+function csrfToken() {
+    return document.querySelector('meta[name="csrf-token"]')?.content || '';
+}
+
+function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function bayarToast(ok, msg) {
+    if (window.Toast) {
+        ok ? Toast.success(msg) : Toast.error(msg);
+    }
+}
+
+function showBayarError(messages) {
+    const box = document.getElementById('bayarError');
+    const list = Array.isArray(messages) ? messages : [messages];
+    box.innerHTML = list.map(m => `<div>• ${esc(m)}</div>`).join('');
+    box.classList.remove('hidden');
+}
+
+function hideBayarError() {
+    const box = document.getElementById('bayarError');
+    box.classList.add('hidden');
+    box.innerHTML = '';
+}
+
+function paidButtonHTML(d, p) {
+    return `<button type="button" class="w-9 h-9 rounded-md bg-green-500 hover:bg-green-600 text-white font-bold shadow-sm" title="Sudah bayar Rp ${esc(p.nominal_format)} • ${esc(p.waktu)} — klik untuk ubah/batalkan" data-paid="1" data-pembayaran-id="${esc(p.id)}" data-nominal="${esc(p.nominal_bayar)}" data-catatan="${esc(p.catatan || '')}" data-waktu="${esc(p.waktu_full)}" data-subject="${esc(d.subject)}" data-tanggal="${esc(d.tanggal)}" data-tanggal-full="${esc(d.tanggalFull)}" data-subject-id="${esc(d.subjectId)}" data-subject-key="${esc(d.subjectKey)}" onclick="openBayarModal(this)">✓</button>`;
+}
+
+function unpaidButtonHTML(d) {
+    return `<button type="button" class="w-9 h-9 rounded-md border-2 border-dashed border-gray-300 text-transparent hover:border-amber-500 hover:bg-amber-50 hover:text-amber-600 font-bold" title="Belum bayar — klik untuk input (${esc(d.tanggalFull)})" data-paid="0" data-subject="${esc(d.subject)}" data-tanggal="${esc(d.tanggal)}" data-tanggal-full="${esc(d.tanggalFull)}" data-subject-id="${esc(d.subjectId)}" data-subject-key="${esc(d.subjectKey)}" onclick="openBayarModal(this)">+</button>`;
+}
+
+function refreshStats(s) {
+    if (!s) return;
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    set('statTerbayar', s.terbayar);
+    set('statBelum', s.belum);
+    set('statRupiah', 'Rp ' + Number(s.rupiah).toLocaleString('id-ID'));
+    set('statPersen', s.persen + '%');
+    const bar = document.getElementById('statPersenBar');
+    if (bar) bar.style.width = s.persen + '%';
+}
+
+async function simpanBayarAjax(e) {
+    e.preventDefault();
+    const form = document.getElementById('bayarForm');
+    const btn = document.getElementById('btnSimpanBayar');
+    hideBayarError();
+    btn.disabled = true;
+    const label = btn.textContent;
+    btn.textContent = 'Menyimpan…';
+    try {
+        const res = await fetch(form.action, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': csrfToken() },
+            body: new FormData(form),
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            if (res.status === 422 && json.errors) {
+                showBayarError(Object.values(json.errors).flat());
+            } else if (res.status === 419) {
+                showBayarError('Sesi kedaluwarsa. Muat ulang halaman lalu coba lagi.');
+            } else {
+                showBayarError(json.message || 'Gagal menyimpan pembayaran. Coba lagi.');
+            }
+            return;
+        }
+        if (bayarTrigger) {
+            bayarTrigger.outerHTML = paidButtonHTML({ ...bayarTrigger.dataset }, json.pembayaran);
+            bayarTrigger = null;
+        }
+        refreshStats(json.stats);
+        closeBayarModal();
+        bayarToast(true, json.message || 'Pembayaran berhasil disimpan!');
+    } catch (err) {
+        showBayarError('Jaringan bermasalah. Periksa koneksi lalu coba lagi.');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = label;
+    }
+}
+document.getElementById('bayarForm')?.addEventListener('submit', simpanBayarAjax);
+
+async function batalBayarAjax() {
+    if (!bayarTrigger) return;
+    if (!confirm('Yakin batalkan pembayaran ini? Sel kembali menjadi belum bayar.')) return;
+    const d = { ...bayarTrigger.dataset };
+    const params = new URLSearchParams({ mode: '{{ $mode }}'@if(request('bulan')), bulan: '{{ request('bulan') }}'@endif @if(request('minggu')), minggu: '{{ request('minggu') }}'@endif @if(request('tahun')), tahun: '{{ request('tahun') }}'@endif @if(request('search')), search: @json(request('search'))@endif });
+    const url = "{{ url('kas-warga-bayar') }}/" + d.pembayaranId + '?' + params.toString();
+    const btnBatal = document.getElementById('btnBatalBayar');
+    hideBayarError();
+    btnBatal.disabled = true;
+    try {
+        const res = await fetch(url, {
+            method: 'DELETE',
+            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest', 'X-CSRF-TOKEN': csrfToken() },
+        });
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) {
+            showBayarError(json.message || 'Gagal membatalkan pembayaran. Coba lagi.');
+            return;
+        }
+        bayarTrigger.outerHTML = unpaidButtonHTML(d);
+        bayarTrigger = null;
+        refreshStats(json.stats);
+        closeBayarModal();
+        bayarToast(true, json.message || 'Pembayaran dibatalkan.');
+    } catch (err) {
+        showBayarError('Jaringan bermasalah. Periksa koneksi lalu coba lagi.');
+    } finally {
+        btnBatal.disabled = false;
+    }
+}
 </script>
 @endpush
 @endif

@@ -92,29 +92,29 @@ html, body {
     padding: 0.7rem 0.5rem;
 }
 
-/* Custom Scrollbar for Sidebar */
+/* Custom Scrollbar for Sidebar (putih di atas hijau) */
 .sidebar-scroll::-webkit-scrollbar {
     width: 6px;
 }
 
 .sidebar-scroll::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.03);
+    background: rgba(255, 255, 255, 0.08);
     border-radius: 10px;
 }
 
 .sidebar-scroll::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.25);
     border-radius: 10px;
 }
 
 .sidebar-scroll::-webkit-scrollbar-thumb:hover {
-    background: rgba(0, 0, 0, 0.25);
+    background: rgba(255, 255, 255, 0.4);
 }
 
 /* For Firefox */
 .sidebar-scroll {
     scrollbar-width: thin;
-    scrollbar-color: rgba(0, 0, 0, 0.15) rgba(0, 0, 0, 0.03);
+    scrollbar-color: rgba(255, 255, 255, 0.25) rgba(255, 255, 255, 0.08);
 }
 
 /* Mobile sidebar - use transform for slide */

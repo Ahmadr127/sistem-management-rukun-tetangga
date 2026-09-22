@@ -211,6 +211,13 @@ return [
                 'route_pattern' => 'activity-logs.*',
                 'permission' => 'view_activity_logs',
             ],
+            [
+                'label' => 'Pengaturan Sistem',
+                'icon' => 'bi-gear-fill',
+                'route' => 'settings.index',
+                'route_pattern' => 'settings.*',
+                'permission' => 'view_settings',
+            ],
         ],
     ],
 ];

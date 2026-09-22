@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Sistem')</title>
+    <title>@yield('title', setting('site_name', 'Sistem'))</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="icon" type="image/x-icon" href="{{ asset('images/logo.png') }}">
+    <link rel="icon" type="image/x-icon" href="{{ site_logo_url() }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -38,16 +38,16 @@
     --}}
     <div x-data="sidebarComponent()" x-init="init()" class="h-full flex overflow-x-hidden">
         
-        <!-- Sidebar: No x-cloak, use CSS to control visibility -->
-        <div class="sidebar fixed inset-y-0 left-0 z-50 bg-white flex flex-col h-screen lg:static lg:inset-0"
+        <!-- Sidebar hijau: gradient primary senada top nav -->
+        <div class="sidebar fixed inset-y-0 left-0 z-50 bg-gradient-to-b from-primary to-primary-700 border-r border-primary-800 flex flex-col h-screen lg:static lg:inset-0"
              :class="{ 'mobile-open': mobileOpen }">
             
             <!-- Logo/Brand -->
-            <div class="sidebar-header flex items-center justify-between px-6 pt-6 pb-3 border-b border-gray-100 flex-shrink-0">
+            <div class="sidebar-header flex items-center justify-between px-6 pt-6 pb-3 border-b border-white/15 flex-shrink-0">
                 <div class="flex items-center gap-2 overflow-hidden">
-                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="sidebar-brand-logo h-[1.875rem] w-auto object-contain flex-shrink-0">
+                    <img src="{{ site_logo_url() }}" alt="Logo" class="sidebar-brand-logo h-[1.875rem] w-auto object-contain flex-shrink-0 bg-white rounded px-0.5 py-px">
                     {{-- Use CSS-driven visibility instead of x-show --}}
-                    <span class="sidebar-text sidebar-brand-text truncate">Sistem</span>
+                    <span class="sidebar-text sidebar-brand-text truncate">{{ setting('site_short_name', 'SI-RT') }}</span>
                 </div>
             </div>
 
@@ -129,13 +129,13 @@
 
         <!-- Main Content Area -->
         <div class="flex-1 flex flex-col lg:ml-0 overflow-x-hidden max-w-full h-full">
-            <!-- Top Navigation Bar -->
-            <header class="bg-white shadow-sm border-b border-gray-200">
+            <!-- Top Navigation Bar — serupa referensi D-ASSA -->
+            <header class="bg-gradient-to-r from-primary to-primary-700 shadow-sm border-b border-primary-800">
                 <div class="flex items-center justify-between h-14 px-4">
                     <div class="flex items-center space-x-4">
                         <!-- Toggle Button with separated logic -->
                         <button @click="toggle()" 
-                                class="p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50" 
+                                class="p-2 rounded-lg text-white hover:text-secondary-200 hover:bg-primary-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50" 
                                 :title="getToggleTitle()">
                             <!-- Mobile icon -->
                             <i class="fas text-lg lg:hidden" :class="mobileOpen ? 'fa-xmark' : 'fa-bars'"></i>
@@ -144,27 +144,27 @@
                         </button>
                         
                         <div class="hidden sm:block">
-                            <h2 class="text-xl font-extrabold text-sp-navy">@yield('title', 'Dashboard')</h2>
-                            <p class="text-sm text-gray-500">Sistem</p>
+                            <h2 class="text-xl font-extrabold text-white">@yield('title', 'Dashboard')</h2>
+                            <p class="text-sm text-primary-200">{{ setting('site_name', 'Sistem Manajemen Rukun Tetangga') }}</p>
                         </div>
                         
                         <!-- Mobile Title -->
                         <div class="sm:hidden">
-                            <h2 class="text-lg font-extrabold text-sp-navy">@yield('title', 'Dashboard')</h2>
+                            <h2 class="text-lg font-extrabold text-white">@yield('title', 'Dashboard')</h2>
                         </div>
                     </div>
                     
                     <div class="flex items-center space-x-3">
                         <!-- User Dropdown -->
                         <div class="relative" x-data="{ open: false }" @click.away="open = false">
-                            <button @click="open = !open" class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
-                                <div class="w-8 h-8 bg-sp-primary rounded-full flex items-center justify-center">
-                                    <i class="fas fa-user text-sm text-white"></i>
+                            <button @click="open = !open" class="flex items-center space-x-2 px-3 py-2 rounded-lg text-white hover:text-secondary-200 hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50">
+                                <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-sm text-primary"></i>
                                 </div>
                                 <div class="text-left hidden sm:block">
-                                    <div class="text-sm font-medium text-gray-700">{{ auth()->user()->name }}</div>
+                                    <div class="text-sm font-medium text-white">{{ auth()->user()->name }}</div>
                                 </div>
-                                <i class="fas fa-chevron-down text-xs text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
+                                <i class="fas fa-chevron-down text-xs text-primary-200 transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
                             </button>
                             
                             <!-- Dropdown Menu -->

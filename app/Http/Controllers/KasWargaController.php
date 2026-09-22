@@ -67,7 +67,27 @@ class KasWargaController extends Controller
     /** Simpan pembayaran dari modal klik tanggal (waktu otomatis sekarang) */
     public function bayar(Bayar $request, KasJenis $kasJenis)
     {
-        $this->kasService->bayar($kasJenis, $request->validated());
+        $bayar = $this->kasService->bayar($kasJenis, $request->validated());
+
+        if ($request->wantsJson()) {
+            $ledger = $this->kasService->getLedger($kasJenis, $request->only(['mode', 'bulan', 'minggu', 'tahun', 'search']));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pembayaran berhasil disimpan!',
+                'pembayaran' => [
+                    'id' => $bayar->id,
+                    'nominal_bayar' => (float) $bayar->nominal_bayar,
+                    'nominal_format' => number_format((float) $bayar->nominal_bayar, 0, ',', '.'),
+                    'catatan' => $bayar->catatan,
+                    'waktu' => $bayar->waktu_bayar?->locale('id')->isoFormat('D MMM YYYY HH:mm'),
+                    'waktu_full' => $bayar->waktu_bayar?->locale('id')->isoFormat('dddd, D MMM YYYY HH:mm'),
+                    'tanggal' => $bayar->tanggal->format('Y-m-d'),
+                ],
+                'stats' => $ledger['stats'],
+            ]);
+        }
+
         return redirect()
             ->route('kas-warga.show', array_merge(['kasJenis' => $kasJenis->id], $request->only(['mode', 'bulan', 'minggu', 'tahun', 'search'])))
             ->with('success', 'Pembayaran berhasil disimpan!');
@@ -78,6 +98,20 @@ class KasWargaController extends Controller
     {
         $kasJenisId = $pembayaran->kas_jenis_id;
         $this->kasService->batalBayar($pembayaran);
+
+        if ($request->wantsJson()) {
+            $ledger = $this->kasService->getLedger(
+                KasJenis::findOrFail($kasJenisId),
+                $request->only(['mode', 'bulan', 'minggu', 'tahun', 'search'])
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Pembayaran dibatalkan.',
+                'stats' => $ledger['stats'],
+            ]);
+        }
+
         return redirect()
             ->route('kas-warga.show', array_merge(['kasJenis' => $kasJenisId], $request->only(['mode', 'bulan', 'minggu', 'tahun', 'search'])))
             ->with('success', 'Pembayaran dibatalkan.');

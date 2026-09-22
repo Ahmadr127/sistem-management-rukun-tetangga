@@ -43,6 +43,9 @@ class RolePermissionSeeder extends Seeder
             ['name' => 'view_kas', 'display_name' => 'Lihat Kas Warga', 'description' => 'Melihat kas warga'],
             ['name' => 'manage_alamat_rt', 'display_name' => 'Kelola Alamat RT', 'description' => 'Mengelola master alamat RT'],
             ['name' => 'view_alamat_rt', 'display_name' => 'Lihat Alamat RT', 'description' => 'Melihat master alamat RT'],
+            // Pengaturan Sistem
+            ['name' => 'manage_settings', 'display_name' => 'Kelola Pengaturan', 'description' => 'Mengubah logo, nama sistem & pengaturan lain'],
+            ['name' => 'view_settings', 'display_name' => 'Lihat Pengaturan', 'description' => 'Melihat pengaturan sistem'],
         ];
 
         foreach ($permissions as $permission) {
