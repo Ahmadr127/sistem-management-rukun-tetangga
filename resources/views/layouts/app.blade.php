@@ -83,7 +83,8 @@
                                 @endphp
                                 <div class="mb-1" x-data="{ open: {{ $isOpen ? 'true' : 'false' }} }">
                                     <button @click="open = !open" 
-                                            class="sidebar-btn w-full justify-between">
+                                            class="sidebar-btn w-full justify-between"
+                                            title="{{ $item['label'] }}">
                                         <div class="flex items-center gap-3">
                                             <i class="bi {{ $item['icon'] }} sidebar-icon"></i>
                                             <span class="sidebar-text">{{ $item['label'] }}</span>
@@ -134,8 +135,8 @@
                 <div class="flex items-center justify-between h-14 px-4">
                     <div class="flex items-center space-x-4">
                         <!-- Toggle Button with separated logic -->
-                        <button @click="toggle()" 
-                                class="p-2 rounded-lg text-white hover:text-secondary-200 hover:bg-primary-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50" 
+                                <button @click="toggle()" 
+                                class="w-10 h-10 inline-flex items-center justify-center rounded-lg text-white hover:text-secondary-200 hover:bg-primary-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 flex-shrink-0" 
                                 :title="getToggleTitle()">
                             <!-- Mobile icon -->
                             <i class="fas text-lg lg:hidden" :class="mobileOpen ? 'fa-xmark' : 'fa-bars'"></i>
