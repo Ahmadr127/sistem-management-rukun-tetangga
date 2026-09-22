@@ -80,45 +80,70 @@ class DatabaseSeeder extends Seeder
         if (!\Illuminate\Support\Facades\Schema::hasTable('kartu_keluarga') || !\Illuminate\Support\Facades\Schema::hasTable('warga')) return;
         if (\App\Models\KartuKeluarga::count() > 0) return;
 
+        // Semua KK demo dalam 1 RT (RT 01) agar data konsisten:
+        // KK.rt_id == warga.rt_id, tiap warga terikat ke KK-nya sendiri.
+        $rtId = $rt1?->id;
+
         $kkData = [
-            ['no_kk'=>'3270010101010001','kepala'=>'Ahmad','rt'=>'01','rt_id'=>$rt1?->id,'rw'=>'01','alamat'=>'Jl. Mawar 1'],
-            ['no_kk'=>'3270010101010002','kepala'=>'Budi','rt'=>'01','rt_id'=>$rt1?->id,'rw'=>'01','alamat'=>'Jl. Mawar 2'],
-            ['no_kk'=>'3270010101010003','kepala'=>'Citra','rt'=>'02','rt_id'=>$rt2?->id,'rw'=>'01','alamat'=>'Jl. Melati 1'],
-            ['no_kk'=>'3270010101010004','kepala'=>'Deni','rt'=>'02','rt_id'=>$rt2?->id,'rw'=>'01','alamat'=>'Jl. Melati 2'],
+            [
+                'no_kk' => '3270010101010001', 'kepala' => 'Ahmad Hidayat',
+                'alamat' => 'Jl. Mawar No. 1',
+                'anggota' => [
+                    ['nama' => 'Ahmad Hidayat', 'nik' => '3270010101900001', 'hubungan' => 'Kepala Keluarga', 'jk' => 'L', 'umur' => 45],
+                    ['nama' => 'Siti Aminah', 'nik' => '3270010101950002', 'hubungan' => 'Istri', 'jk' => 'P', 'umur' => 42],
+                    ['nama' => 'Rizky Hidayat', 'nik' => '3270010101100003', 'hubungan' => 'Anak', 'jk' => 'L', 'umur' => 18],
+                ],
+            ],
+            [
+                'no_kk' => '3270010101010002', 'kepala' => 'Budi Santoso',
+                'alamat' => 'Jl. Mawar No. 2',
+                'anggota' => [
+                    ['nama' => 'Budi Santoso', 'nik' => '3270010101880004', 'hubungan' => 'Kepala Keluarga', 'jk' => 'L', 'umur' => 50],
+                    ['nama' => 'Dewi Lestari', 'nik' => '3270010101920005', 'hubungan' => 'Istri', 'jk' => 'P', 'umur' => 47],
+                ],
+            ],
+            [
+                'no_kk' => '3270010101010003', 'kepala' => 'Citra Permata',
+                'alamat' => 'Jl. Melati No. 1',
+                'anggota' => [
+                    ['nama' => 'Citra Permata', 'nik' => '3270010101930006', 'hubungan' => 'Kepala Keluarga', 'jk' => 'P', 'umur' => 35],
+                    ['nama' => 'Eka Pratama', 'nik' => '3270010101150007', 'hubungan' => 'Anak', 'jk' => 'L', 'umur' => 12],
+                    ['nama' => 'Fitriani', 'nik' => '3270010101180008', 'hubungan' => 'Anak', 'jk' => 'P', 'umur' => 8],
+                ],
+            ],
+            [
+                'no_kk' => '3270010101010004', 'kepala' => 'Deni Kurniawan',
+                'alamat' => 'Jl. Melati No. 2',
+                'anggota' => [
+                    ['nama' => 'Deni Kurniawan', 'nik' => '3270010101850009', 'hubungan' => 'Kepala Keluarga', 'jk' => 'L', 'umur' => 55],
+                    ['nama' => 'Ratna Sari', 'nik' => '3270010101890010', 'hubungan' => 'Istri', 'jk' => 'P', 'umur' => 52],
+                ],
+            ],
         ];
-        $wargaNames = [
-            ['nama'=>'Ahmad','nik'=>'3270010101010001','rt_id'=>$rt1?->id],
-            ['nama'=>'Budi','nik'=>'3270010101010002','rt_id'=>$rt1?->id],
-            ['nama'=>'Siti','nik'=>'3270010101010003','rt_id'=>$rt1?->id],
-            ['nama'=>'Citra','nik'=>'3270010101010004','rt_id'=>$rt2?->id],
-            ['nama'=>'Deni','nik'=>'3270010101010005','rt_id'=>$rt2?->id],
-            ['nama'=>'Eka','nik'=>'3270010101010006','rt_id'=>$rt2?->id],
-        ];
-        $kks = [];
+
         foreach ($kkData as $d) {
-            $kks[] = \App\Models\KartuKeluarga::create([
-                'no_kk'=>$d['no_kk'],
-                'kepala_keluarga'=>$d['kepala'],
-                'alamat'=>$d['alamat'],
-                'rt'=>$d['rt'],
-                'rw'=>$d['rw'],
-                'rt_id'=>$d['rt_id'],
-                'desa'=>'Demo','kecamatan'=>'Demo','kabupaten'=>'Demo','provinsi'=>'Jabar',
+            $kk = \App\Models\KartuKeluarga::create([
+                'no_kk' => $d['no_kk'],
+                'kepala_keluarga' => $d['kepala'],
+                'alamat' => $d['alamat'],
+                'rt' => '01',
+                'rw' => '01',
+                'rt_id' => $rtId,
+                'desa' => 'Demo', 'kecamatan' => 'Demo', 'kabupaten' => 'Demo', 'provinsi' => 'Jabar',
             ]);
-        }
-        foreach ($wargaNames as $idx => $w) {
-            $kk = $kks[$idx % count($kks)];
-            // ensure rt consistency: warga rt_id matches kk rt_id
-            \App\Models\Warga::create([
-                'kartu_keluarga_id'=>$kk->id,
-                'rt_id'=>$w['rt_id'] ?? $kk->rt_id,
-                'nik'=>$w['nik'],
-                'nama'=>$w['nama'],
-                'jenis_kelamin'=> $idx %2==0 ? 'L':'P',
-                'status_warga'=>'AKTIF',
-                'tempat_lahir'=>'Bandung',
-                'tanggal_lahir'=> now()->subYears(20+$idx)->toDateString(),
-            ]);
+            foreach ($d['anggota'] as $a) {
+                \App\Models\Warga::create([
+                    'kartu_keluarga_id' => $kk->id,
+                    'rt_id' => $rtId,
+                    'nik' => $a['nik'],
+                    'nama' => $a['nama'],
+                    'jenis_kelamin' => $a['jk'],
+                    'hubungan_keluarga' => $a['hubungan'],
+                    'status_warga' => 'AKTIF',
+                    'tempat_lahir' => 'Bogor',
+                    'tanggal_lahir' => now()->subYears($a['umur'])->toDateString(),
+                ]);
+            }
         }
     }
 
