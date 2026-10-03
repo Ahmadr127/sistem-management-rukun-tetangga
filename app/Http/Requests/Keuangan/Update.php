@@ -13,7 +13,7 @@ class Update extends FormRequest
             'tanggal' => 'required|date',
             'jenis' => 'required|in:PEMASUKAN,PENGELUARAN',
             'kategori' => 'required|string|max:100',
-            'jumlah' => 'required|numeric|min:0',
+            'jumlah' => 'required|integer|min:0',
             'rt_id' => 'nullable|exists:rts,id',
             'sumber_dana' => 'nullable|string|max:255',
             'keterangan' => 'nullable|string|max:255',

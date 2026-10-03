@@ -12,7 +12,7 @@ class Bayar extends FormRequest
     {
         return [
             'tanggal' => 'required|date',
-            'nominal_bayar' => 'required|numeric|min:0',
+            'nominal_bayar' => 'required|integer|min:0',
             'kartu_keluarga_id' => 'nullable|exists:kartu_keluarga,id',
             'warga_id' => 'nullable|exists:warga,id',
             'catatan' => 'nullable|string|max:255',

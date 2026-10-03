@@ -14,7 +14,7 @@ class Update extends FormRequest
             'rt_id' => 'nullable|exists:rts,id',
             'nama' => 'required|string|max:100',
             'periode_type' => 'required|in:weekly,monthly,yearly',
-            'nominal' => 'required|numeric|min:0',
+            'nominal' => 'required|integer|min:0',
             'target_type' => 'required|in:kk,perorangan',
             'deskripsi' => 'nullable|string|max:1000',
             'is_active' => 'nullable|boolean',

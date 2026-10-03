@@ -103,7 +103,7 @@
                 <a href="{{ route('kartu-keluarga.index') }}" class="px-3 py-1.5 border rounded-md text-xs">Lihat KK</a>
             </div>
         </x-card>
-        <x-card title="Saldo Kas RT">
+        <x-card title="Saldo Dana Lingkungan">
             <div class="space-y-2">
                 <div class="flex justify-between text-sm"><span class="text-gray-500">Pemasukan</span><span class="font-semibold text-green-600">Rp {{ number_format($saldo['pemasukan'],0,',','.') }}</span></div>
                 <div class="flex justify-between text-sm"><span class="text-gray-500">Pengeluaran</span><span class="font-semibold text-red-600">Rp {{ number_format($saldo['pengeluaran'],0,',','.') }}</span></div>

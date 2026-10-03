@@ -149,7 +149,7 @@ return [
                         'permission' => 'view_laporan_keuangan',
                     ],
                     [
-                        'label' => 'Kas Warga',
+                        'label' => 'Dana Lingkungan',
                         'icon' => 'bi-wallet2',
                         'route' => 'kas-warga.index',
                         'route_pattern' => 'kas-warga.*',

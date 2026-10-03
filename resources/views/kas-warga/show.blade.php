@@ -206,7 +206,7 @@
             @if(request('search'))<input type="hidden" name="search" value="{{ request('search') }}">@endif
             <div>
                 <label class="block text-sm font-semibold mb-1">Nominal Bayar (Rp) *</label>
-                <input type="number" name="nominal_bayar" id="f_nominal" min="0" required class="w-full px-3 py-2 border rounded-md text-sm">
+                <x-rupiah-input name="nominal_bayar" id="f_nominal" required :min="0" />
             </div>
             <div>
                 <label class="block text-sm font-semibold mb-1">Waktu Bayar (otomatis)</label>
@@ -250,7 +250,7 @@ function openBayarModal(btn) {
     hideBayarError();
     if (d.paid === '1') {
         document.getElementById('bayarTitle').textContent = 'Sudah Bayar — Ubah / Batalkan';
-        document.getElementById('f_nominal').value = d.nominal;
+        window.Rupiah && Rupiah.setValue('f_nominal', d.nominal);
         document.getElementById('f_catatan').value = d.catatan || '';
         info.classList.remove('hidden');
         info.textContent = 'Dibayar pada ' + d.waktu + ' sebesar Rp ' + Number(d.nominal).toLocaleString('id-ID') + '. Simpan untuk mengubah nominal, atau batalkan pembayaran.';
@@ -258,7 +258,7 @@ function openBayarModal(btn) {
         btnBatal.onclick = batalBayarAjax;
     } else {
         document.getElementById('bayarTitle').textContent = 'Input Pembayaran';
-        document.getElementById('f_nominal').value = {{ (float) $kasJenis->nominal }};
+        window.Rupiah && Rupiah.setValue('f_nominal', {{ (float) $kasJenis->nominal }});
         document.getElementById('f_catatan').value = '';
         info.classList.add('hidden');
         btnBatal.classList.add('hidden');

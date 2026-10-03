@@ -140,7 +140,7 @@ class KeuanganService
     {
         // default categories if no data yet
         $defaults = $jenis === 'PEMASUKAN'
-            ? ['Iuran Warga','Donasi','Kas RT','Bantuan Pemerintah','Usaha RT','Lain-lain']
+            ? ['Iuran Warga','Donasi','Dana Lingkungan','Bantuan Pemerintah','Usaha RT','Lain-lain']
             : ['Konsumsi','Perbaikan','Kebersihan','Keamanan','Acara','ATK','Lain-lain'];
         $existing = Keuangan::where('jenis',$jenis)->distinct()->pluck('kategori')->toArray();
         return collect(array_merge($defaults, $existing))->unique()->values()->toArray();

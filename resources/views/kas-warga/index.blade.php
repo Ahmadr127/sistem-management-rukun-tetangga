@@ -1,16 +1,16 @@
 @extends('layouts.app')
-@section('title', 'Kas Warga')
+@section('title', 'Dana Lingkungan')
 @section('content')
 <div class="w-full mx-auto space-y-4">
     <x-card padding="false" accent="green">
-        <x-slot name="title">Kas Warga @if(auth()->user()->rt) {{ auth()->user()->rt->kode_rt }} @endif</x-slot>
+        <x-slot name="title">Dana Lingkungan @if(auth()->user()->rt) {{ auth()->user()->rt->kode_rt }} @endif</x-slot>
         <x-slot name="subtitle">Kelola jenis kas (bulanan / tahunan / mingguan) per KK atau perorangan — klik Buka untuk input pembayaran harian</x-slot>
         <x-slot name="actions">
             <div class="flex gap-2">
                 @if(auth()->user()->hasPermission('manage_kas'))
-                <a href="{{ route('kas-warga.create') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-white rounded-md bg-green-600 hover:bg-green-700">
+                <button type="button" data-open-modal="modal-kas-create" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-white rounded-md bg-green-600 hover:bg-green-700">
                     <i class="bi bi-plus-lg"></i> Tambah Jenis Kas
-                </a>
+                </button>
                 @endif
             </div>
         </x-slot>
@@ -60,46 +60,142 @@
                 </div>
             </form>
         </div>
-        <x-table :columns="['No','Jenis Kas','RT','Periode','Nominal','Target','Terkumpul','Status','Aksi']" :pagination="$jenis" accent="green">
-            @forelse($jenis as $j)
-            <tr class="hover:bg-green-50/40">
-                <td class="px-3 py-2 text-sm">{{ ($jenis->currentPage()-1)*$jenis->perPage() + $loop->iteration }}</td>
-                <td class="px-3 py-2">
-                    <a href="{{ route('kas-warga.show', $j) }}" class="text-sm font-semibold text-green-700 hover:underline">{{ $j->nama }}</a>
-                    @if($j->deskripsi)<div class="text-xs text-gray-500 truncate max-w-[220px]">{{ $j->deskripsi }}</div>@endif
-                </td>
-                <td class="px-3 py-2 text-sm"><span class="px-2 py-0.5 text-xs bg-teal-100 text-teal-800 rounded-full">{{ $j->rt->kode_rt ?? '-' }}</span></td>
-                <td class="px-3 py-2">
-                    <span class="text-xs px-1.5 py-0.5 rounded inline-block @if($j->periode_type=='monthly') bg-blue-100 text-blue-800 @elseif($j->periode_type=='yearly') bg-orange-100 text-orange-800 @else bg-purple-100 text-purple-800 @endif">{{ $j->periode_label }}</span>
-                </td>
-                <td class="px-3 py-2 text-sm font-semibold">Rp {{ number_format($j->nominal,0,',','.') }}</td>
-                <td class="px-3 py-2">
-                    <span class="text-xs px-1.5 py-0.5 rounded inline-block @if($j->target_type=='kk') bg-amber-100 text-amber-800 @else bg-slate-200 text-slate-700 @endif">
-                        <i class="bi {{ $j->target_type=='kk' ? 'bi-people' : 'bi-person' }}"></i> {{ $j->target_label }}
+        @if($jenis->count())
+        <div class="flex flex-wrap justify-start gap-x-1 gap-y-3 p-2">
+            @foreach($jenis as $j)
+            <div class="group relative w-40 shrink-0 p-1 flex flex-col items-center text-center transition-all duration-200 hover:-translate-y-1.5 {{ $j->is_active ? '' : 'opacity-60' }}">
+                @if(auth()->user()->hasPermission('manage_kas'))
+                <div class="absolute top-0 right-0 flex gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                    <button type="button" title="Edit" data-open-modal="modal-kas-edit"
+                       data-edit-url="{{ route('kas-warga.update', $j) }}"
+                       data-rt-id="{{ $j->rt_id }}"
+                       data-rt-name="{{ $j->rt?->kode_rt }}"
+                       data-nama="{{ $j->nama }}"
+                       data-periode="{{ $j->periode_type }}"
+                       data-target="{{ $j->target_type }}"
+                       data-nominal="{{ $j->nominal }}"
+                       data-active="{{ $j->is_active ? '1' : '0' }}"
+                       data-deskripsi="{{ $j->deskripsi }}"
+                       onclick="fillKasEditModal(this)"
+                       class="w-6 h-6 inline-flex items-center justify-center rounded-md bg-white border border-gray-200 text-slate-500 hover:text-amber-600 hover:border-amber-300 hover:bg-amber-50 shadow-sm">
+                        <i class="bi bi-pencil text-[10px]"></i>
+                    </button>
+                    <form action="{{ route('kas-warga.destroy', $j) }}" method="POST" class="inline"
+                          onsubmit="return confirm('Yakin hapus jenis kas ini beserta SEMUA data pembayarannya?')">
+                        @csrf @method('DELETE')
+                        <button type="submit" title="Hapus"
+                                class="w-6 h-6 inline-flex items-center justify-center rounded-md bg-white border border-gray-200 text-slate-400 hover:text-red-600 hover:border-red-300 hover:bg-red-50 shadow-sm">
+                            <i class="bi bi-trash text-[10px]"></i>
+                        </button>
+                    </form>
+                </div>
+                @endif
+
+                <a href="{{ route('kas-warga.show', $j) }}" title="Buka {{ $j->nama }}"
+                   class="flex flex-col items-center w-full">
+                    <span class="relative block w-[72px] h-[72px] transition-transform duration-300 ease-out group-hover:scale-105">
+                        {{-- Folder tertutup (state normal) --}}
+                        <img src="{{ asset('images/folder.png') }}" alt="Arsip tertutup"
+                             class="absolute inset-0 w-full h-full object-contain transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-95">
+                        {{-- Folder terbuka (state hover) --}}
+                        <img src="{{ asset('images/open-folder.png') }}" alt="Arsip terbuka"
+                             class="absolute inset-0 w-full h-full object-contain opacity-0 scale-95 transition-all duration-300 ease-out group-hover:opacity-100 group-hover:scale-100">
                     </span>
-                </td>
-                <td class="px-3 py-2 text-sm">
-                    <div class="font-semibold text-green-700">Rp {{ number_format($j->total_terkumpul ?? 0,0,',','.') }}</div>
-                    <div class="text-xs text-gray-500">{{ $j->pembayaran_count }} pembayaran</div>
-                </td>
-                <td class="px-3 py-2">
-                    @if($j->is_active)<span class="px-2 py-0.5 text-xs bg-green-100 text-green-800 rounded-full">Aktif</span>
-                    @else<span class="px-2 py-0.5 text-xs bg-gray-200 text-gray-600 rounded-full">Nonaktif</span>@endif
-                </td>
-                <td class="px-3 py-2 whitespace-nowrap">
-                    <x-actions>
-                        <x-actions-item href="{{ route('kas-warga.show', $j) }}" icon="bi-table" label="Buka Tabel" />
-                        @if(auth()->user()->hasPermission('manage_kas'))
-                        <x-actions-item href="{{ route('kas-warga.edit', $j) }}" icon="bi-pencil" label="Edit" />
-                        <x-actions-form action="{{ route('kas-warga.destroy', $j) }}" method="DELETE" icon="bi-trash" label="Hapus" confirm="Yakin hapus jenis kas ini beserta SEMUA data pembayarannya?" />
-                        @endif
-                    </x-actions>
-                </td>
-            </tr>
-            @empty
-            <tr><td colspan="9" class="px-3 py-8 text-center text-sm text-gray-500">Belum ada jenis kas. Klik <b>Tambah Jenis Kas</b> untuk membuat (mis. Kas Bulanan Rp20.000 / KK).</td></tr>
-            @endforelse
-        </x-table>
+                    <span class="mt-1 text-xs font-semibold text-slate-700 leading-tight line-clamp-2">{{ $j->nama }}</span>
+                </a>
+            </div>
+            @endforeach
+        </div>
+        <div class="px-4 pb-4">
+            {{ $jenis->links() }}
+        </div>
+        @else
+        <div class="p-10 text-center">
+            <i class="bi bi-journal-bookmark text-5xl text-gray-200"></i>
+            <p class="mt-3 text-sm font-semibold text-gray-600">Belum ada jenis kas</p>
+            <p class="mt-1 text-xs text-gray-400">Klik <b>Tambah Jenis Kas</b> untuk membuat (mis. Kas Bulanan Rp20.000 / KK).</p>
+        </div>
+        @endif
     </x-card>
 </div>
+
+{{-- Modal tambah jenis kas --}}
+@if(auth()->user()->hasPermission('manage_kas'))
+<x-modal id="modal-kas-create" title="Tambah Jenis Kas" maxWidth="max-w-2xl">
+    @include('kas-warga._form', [
+        'action' => route('kas-warga.store'),
+        'method' => 'POST',
+        'modal' => 'create-kas',
+        'kasJenis' => null,
+        'rts' => $rts,
+        'submitLabel' => 'Simpan & Buka Tabel',
+        'prefix' => 'kasCreate',
+    ])
+</x-modal>
+
+{{-- Modal edit jenis kas (diisi via JS) --}}
+<x-modal id="modal-kas-edit" title="Edit Jenis Kas" maxWidth="max-w-2xl">
+    @include('kas-warga._form', [
+        'action' => '',
+        'method' => 'PUT',
+        'modal' => 'edit-kas',
+        'kasJenis' => null,
+        'rts' => $rts,
+        'submitLabel' => 'Perbarui',
+        'prefix' => 'kasEdit',
+        'formId' => 'kasEditForm',
+    ])
+</x-modal>
+
+@push('scripts')
+<script>
+function fillKasEditModal(btn) {
+    const d = btn.dataset;
+    document.getElementById('kasEditForm').action = d.editUrl;
+    document.getElementById('kasEditModalId').value = d.editUrl.split('/').pop();
+    const rt = document.getElementById('kasEditRt');
+    if (rt) rt.value = d.rtId;
+    const rtHidden = document.getElementById('kasEditRtHidden');
+    if (rtHidden) rtHidden.value = d.rtId;
+    const rtName = document.getElementById('kasEditRtName');
+    if (rtName && d.rtName) rtName.textContent = d.rtName;
+    document.getElementById('kasEditNama').value = d.nama || '';
+    document.getElementById('kasEditPeriode').value = d.periode || 'monthly';
+    document.getElementById('kasEditTarget').value = d.target || 'kk';
+    window.Rupiah && Rupiah.setValue('kasEditNominal', d.nominal);
+    document.getElementById('kasEditActive').checked = d.active === '1';
+    document.getElementById('kasEditDeskripsi').value = d.deskripsi || '';
+}
+</script>
+@endpush
+
+{{-- Buka kembali modal jika validasi gagal --}}
+@if($errors->any() && old('_modal'))
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const which = @json(old('_modal'));
+    if (which === 'create-kas') {
+        openModal('modal-kas-create');
+    } else if (which === 'edit-kas') {
+        const id = @json(old('_modal_id'));
+        document.getElementById('kasEditForm').action = '{{ url('kas-warga') }}/' + id;
+        document.getElementById('kasEditModalId').value = id;
+        const rt = document.getElementById('kasEditRt');
+        if (rt) rt.value = @json(old('rt_id'));
+        const rtHidden = document.getElementById('kasEditRtHidden');
+        if (rtHidden) rtHidden.value = @json(old('rt_id'));
+        document.getElementById('kasEditNama').value = @json(old('nama'));
+        document.getElementById('kasEditPeriode').value = @json(old('periode_type', 'monthly'));
+        document.getElementById('kasEditTarget').value = @json(old('target_type', 'kk'));
+        window.Rupiah && Rupiah.setValue('kasEditNominal', @json(old('nominal')));
+        document.getElementById('kasEditActive').checked = @json((bool) old('is_active'));
+        document.getElementById('kasEditDeskripsi').value = @json(old('deskripsi'));
+        openModal('modal-kas-edit');
+    }
+});
+</script>
+@endpush
+@endif
+@endif
 @endsection
