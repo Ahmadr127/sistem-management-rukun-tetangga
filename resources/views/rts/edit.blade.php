@@ -12,6 +12,24 @@
                 <textarea name="keterangan" rows="3" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500">{{ old('keterangan', $rt->keterangan) }}</textarea>
                 @error('keterangan')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
             </div>
+            <div>
+                @if($users->count())
+                    <x-searchable-dropdown
+                        name="user_ids"
+                        label="User Pengelola RT"
+                        :options="$users->map(fn($u) => (object)['id' => $u->id, 'name' => $u->name . ' (' . $u->username . ')' . ($u->rt_id ? '' : ' · tanpa RT')])"
+                        value-field="id"
+                        label-field="name"
+                        :selected="$rt->users->pluck('id')->toArray()"
+                        placeholder="Pilih user pengelola..."
+                        :multiple="true"
+                    />
+                    <p class="text-xs text-gray-400 mt-1">Ketik untuk mencari user. User yang tidak dipilih akan dilepas dari RT ini. Hanya user tanpa RT yang bisa ditambahkan.</p>
+                @else
+                    <label class="block text-sm font-medium text-gray-700 mb-1">User Pengelola RT</label>
+                    <p class="text-sm text-gray-500 border border-dashed border-gray-300 rounded-md px-3 py-2">Belum ada user yang tersedia. Tambahkan dulu lewat menu Users.</p>
+                @endif
+            </div>
             <label class="flex items-center gap-2">
                 <input type="hidden" name="is_active" value="0">
                 <input type="checkbox" name="is_active" value="1" {{ old('is_active', $rt->is_active)?'checked':'' }} class="rounded border-gray-300 text-teal-600 focus:ring-teal-500">

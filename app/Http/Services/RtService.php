@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Models\Rt;
+use App\Models\User;
 use App\Services\ActivityLogService;
 use Illuminate\Support\Facades\DB;
 
@@ -37,7 +38,32 @@ class RtService
     public function updateRt(Rt $rt, array $data): Rt
     {
         $old = $rt->toArray();
-        $rt->update($data);
+        $userIds = $data['user_ids'] ?? null;
+        unset($data['user_ids']);
+
+        DB::transaction(function () use ($rt, $data, $userIds) {
+            $rt->update($data);
+
+            if (is_array($userIds)) {
+                // Lepas user yang tidak lagi dipilih (kembali tanpa RT / superadmin)
+                $detached = User::where('rt_id', $rt->id);
+                if (count($userIds) > 0) {
+                    $detached->whereNotIn('id', $userIds);
+                }
+                $detached->update(['rt_id' => null]);
+
+                // Tetapkan user terpilih ke RT ini (hanya yang belum punya RT atau milik RT ini,
+                // agar tidak merebut user dari RT lain)
+                if (count($userIds) > 0) {
+                    User::whereIn('id', $userIds)
+                        ->where(function ($q) use ($rt) {
+                            $q->whereNull('rt_id')->orWhere('rt_id', $rt->id);
+                        })
+                        ->update(['rt_id' => $rt->id]);
+                }
+            }
+        });
+
         $rt->refresh();
         $this->activityLogger->logUpdated($rt, $old, $rt->toArray());
         return $rt;

@@ -93,9 +93,23 @@ return [
             [
                 'label' => 'Kartu Keluarga',
                 'icon' => 'bi-house-heart-fill',
-                'route' => 'kartu-keluarga.index',
-                'route_pattern' => 'kartu-keluarga.*',
-                'permission' => 'view_kk',
+                'permissions' => ['view_kk'],
+                'children' => [
+                    [
+                        'label' => 'Data KK',
+                        'icon' => 'bi-house-heart-fill',
+                        'route' => 'kartu-keluarga.index',
+                        'route_pattern' => ['kartu-keluarga.index', 'kartu-keluarga.show', 'kartu-keluarga.create', 'kartu-keluarga.edit'],
+                        'permission' => 'view_kk',
+                    ],
+                    [
+                        'label' => 'Peta KK',
+                        'icon' => 'bi-map-fill',
+                        'route' => 'kartu-keluarga.peta',
+                        'route_pattern' => 'kartu-keluarga.peta',
+                        'permission' => 'view_kk',
+                    ],
+                ],
             ],
             [
                 'label' => 'Mutasi Warga',

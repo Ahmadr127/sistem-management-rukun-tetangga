@@ -43,6 +43,13 @@
             <x-rt-address-selector :rts="$rts" :selectedRtId="old('rt_id', $kartuKeluarga->rt_id)" :required="true" alamatName="alamat" :alamatValue="old('alamat', $kartuKeluarga->alamat)" />
             <p class="text-xs text-gray-500 -mt-2">Alamat jalan bebas edit. RW, Kelurahan, Kecamatan, Kota, Provinsi, Kode Pos otomatis dari master RT.</p>
 
+            <div>
+                <label class="block text-sm font-semibold mb-1">Koordinat Rumah <span class="text-gray-400 font-normal">(opsional)</span></label>
+                <x-koordinat-picker :latitude="old('latitude', $kartuKeluarga->latitude)" :longitude="old('longitude', $kartuKeluarga->longitude)" />
+                @error('latitude')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+                @error('longitude')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+            </div>
+
             @if($kartuKeluarga->warga->count())
             <div class="p-3 bg-gray-50 border rounded-md">
                 <div class="text-sm font-semibold mb-2">Anggota Saat Ini ({{ $kartuKeluarga->warga->count() }}) — kepala ter-highlight</div>

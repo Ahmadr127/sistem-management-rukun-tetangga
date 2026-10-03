@@ -17,6 +17,8 @@ class Update extends FormRequest
             'nama_rt' => 'required|string|max:100',
             'is_active' => 'nullable|boolean',
             'keterangan' => 'nullable|string|max:500',
+            'user_ids' => 'nullable|array',
+            'user_ids.*' => 'exists:users,id',
         ];
     }
 }

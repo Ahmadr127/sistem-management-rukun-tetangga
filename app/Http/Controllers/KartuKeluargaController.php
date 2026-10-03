@@ -39,6 +39,37 @@ class KartuKeluargaController extends Controller
         return view('kartu-keluarga.show', compact('kartuKeluarga','rts'));
     }
 
+    public function peta(Request $request)
+    {
+        $user = auth()->user();
+        $rtId = $request->integer('rt_id') ?: null;
+        if ($user && !$user->isSuperAdmin() && $user->rt_id) {
+            $rtId = (int) $user->rt_id;
+        }
+
+        ['data' => $kkList, 'total' => $total] = $this->kkService->getPetaData($rtId);
+        $rts = \App\Models\Rt::active()->orderBy('kode_rt')->get();
+
+        $markers = $kkList->map(fn($kk) => [
+            'id' => $kk->id,
+            'lat' => (float) $kk->latitude,
+            'lng' => (float) $kk->longitude,
+            'no_kk' => $kk->no_kk,
+            'kepala' => $kk->kepala_keluarga ?? '-',
+            'alamat' => $kk->alamat_lengkap,
+            'rt' => $kk->rtRelation?->kode_rt ?? $kk->rt ?? '-',
+            'url' => route('kartu-keluarga.show', $kk),
+        ])->values();
+
+        return view('kartu-keluarga.peta', [
+            'markers' => $markers,
+            'total' => $total,
+            'rts' => $rts,
+            'selectedRtId' => $rtId,
+            'isSuper' => $user?->isSuperAdmin() ?? false,
+        ]);
+    }
+
     public function edit(KartuKeluarga $kartuKeluarga)
     {
         $this->kkService->ensureRtAccess($kartuKeluarga);

@@ -27,6 +27,13 @@ class KartuKeluarga extends Model
         'kabupaten',
         'provinsi',
         'kode_pos',
+        'latitude',
+        'longitude',
+    ];
+
+    protected $casts = [
+        'latitude' => 'decimal:7',
+        'longitude' => 'decimal:7',
     ];
 
     protected static $autoAudit = true;
@@ -57,6 +64,12 @@ class KartuKeluarga extends Model
     public function rtRelation(): BelongsTo
     {
         return $this->belongsTo(Rt::class, 'rt_id');
+    }
+
+    public function getHasKoordinatAttribute(): bool
+    {
+        return $this->latitude !== null && $this->longitude !== null
+            && is_numeric($this->latitude) && is_numeric($this->longitude);
     }
 
     public function scopeByRt($query, $rt)

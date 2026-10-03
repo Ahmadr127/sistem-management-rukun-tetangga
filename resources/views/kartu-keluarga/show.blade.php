@@ -98,6 +98,19 @@
 
         <div class="h-px bg-slate-200"></div>
 
+        {{-- Lokasi Rumah --}}
+        @if($kartuKeluarga->has_koordinat)
+        <div class="px-4 sm:px-5 py-4">
+            <div class="flex items-center justify-between gap-3 mb-3">
+                <h2 class="text-xs font-semibold text-slate-900">Lokasi Rumah</h2>
+                <span class="font-mono text-xs text-slate-500">{{ $kartuKeluarga->latitude }}, {{ $kartuKeluarga->longitude }}</span>
+            </div>
+            <x-koordinat-picker :latitude="$kartuKeluarga->latitude" :longitude="$kartuKeluarga->longitude" :readonly="true" height="260px" />
+        </div>
+
+        <div class="h-px bg-slate-200"></div>
+        @endif
+
         {{-- Anggota Keluarga --}}
         <div class="px-4 sm:px-5 py-4">
             <div class="flex items-center justify-between gap-3 mb-3">

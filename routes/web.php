@@ -72,6 +72,7 @@ Route::middleware('auth')->group(function () {
     // Data Kartu Keluarga — KK & anggota keluarga
     Route::middleware('permission:view_kk')->group(function () {
         Route::get('kartu-keluarga', [KartuKeluargaController::class, 'index'])->name('kartu-keluarga.index');
+        Route::get('kartu-keluarga-peta', [KartuKeluargaController::class, 'peta'])->name('kartu-keluarga.peta');
         Route::get('kartu-keluarga/{kartuKeluarga}', [KartuKeluargaController::class, 'show'])->name('kartu-keluarga.show');
     });
     Route::middleware('permission:manage_kk')->group(function () {

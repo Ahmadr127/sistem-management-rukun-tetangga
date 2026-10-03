@@ -6,6 +6,7 @@ use App\Http\Requests\Rt\Store;
 use App\Http\Requests\Rt\Update;
 use App\Http\Services\RtService;
 use App\Models\Rt;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class RtController extends Controller
@@ -40,13 +41,21 @@ class RtController extends Controller
 
     public function edit(Rt $rt)
     {
-        return view('rts.edit', compact('rt'));
+        $rt->load('users');
+        // Kandidat pengelola: user yang belum punya RT + user yang sudah di RT ini
+        $users = User::whereNull('rt_id')
+            ->orWhere('rt_id', $rt->id)
+            ->orderBy('name')
+            ->get();
+        return view('rts.edit', compact('rt', 'users'));
     }
 
     public function update(Update $request, Rt $rt)
     {
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active', true);
+        // Checkbox yang tidak dicentang tidak terkirim -> anggap sebagai "lepas semua"
+        $data['user_ids'] = $request->input('user_ids', []);
         $this->rtService->updateRt($rt, $data);
         return redirect()->route('rts.index')->with('success','RT berhasil diperbarui!');
     }

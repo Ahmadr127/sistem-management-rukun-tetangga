@@ -61,12 +61,12 @@
                     dimasukkan salah. Tenang, kami bantu Anda kembali ke jalan yang benar.
                 </p>
 
-                @if(request()->path() !== '/')
+                {{-- @if(request()->path() !== '/')
                     <p class="mt-3 inline-flex max-w-full items-center gap-2 rounded-lg bg-gray-100 border border-gray-200 px-3 py-2 text-xs text-gray-500">
                         <i class="fas fa-link text-gray-400 shrink-0"></i>
                         <span class="truncate font-mono">/{{ request()->path() }}</span>
                     </p>
-                @endif
+                @endif --}}
 
                 {{-- Tombol aksi --}}
                 <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">

@@ -57,6 +57,45 @@ class KartuKeluargaService
         }
     }
 
+    /**
+     * Data untuk halaman peta general: semua KK yang punya koordinat
+     * (menghormati scope RT user non-superadmin).
+     *
+     * @return array{data: \Illuminate\Support\Collection, total: int}
+     */
+    public function getPetaData(?int $rtId = null): array
+    {
+        $user = auth()->user();
+        if ($user && !$user->isSuperAdmin() && $user->rt_id) {
+            $rtId = (int) $user->rt_id;
+        }
+
+        $base = KartuKeluarga::query();
+        if ($rtId) {
+            $base->where('rt_id', $rtId);
+        }
+
+        $total = (clone $base)->count();
+        $data = (clone $base)->whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->with('rtRelation')
+            ->orderBy('kepala_keluarga')
+            ->get();
+
+        return ['data' => $data, 'total' => $total];
+    }
+
+    private function normalizeKoordinat(array &$data): void
+    {
+        // Form yang dikosongkan bisa mengirim string kosong (mis. saat tanpa
+        // middleware ConvertEmptyStringsToNull) — ubah jadi null agar konsisten.
+        foreach (['latitude', 'longitude'] as $field) {
+            if (array_key_exists($field, $data) && ($data[$field] === '' || $data[$field] === false)) {
+                $data[$field] = null;
+            }
+        }
+    }
+
     private function applyMasterAlamat(array &$data): void
     {
         if (empty($data['rt_id'])) return;
@@ -92,6 +131,7 @@ class KartuKeluargaService
             if ($w) $data['kepala_keluarga'] = $w->nama;
         }
         unset($data['kepala_keluarga_id']);
+        $this->normalizeKoordinat($data);
         $this->applyMasterAlamat($data);
         return KartuKeluarga::create($data);
     }
@@ -110,6 +150,7 @@ class KartuKeluargaService
         }
         // if kepala_keluarga_id is empty string/null and kepala_keluarga text is also empty, keep existing
         unset($data['kepala_keluarga_id']);
+        $this->normalizeKoordinat($data);
         $this->applyMasterAlamat($data);
         $oldData = $kk->toArray();
         $kk->update($data);

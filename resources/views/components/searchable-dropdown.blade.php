@@ -23,6 +23,20 @@
         group-field="category"
         :selected="$selectedValue"
     />
+
+    Multiple selection (submits as name[]):
+    <x-searchable-dropdown
+        name="user_ids"
+        label="Label Text"
+        :options="$collection"
+        value-field="id"
+        label-field="name"
+        :selected="$selectedIdsArray"
+        :multiple="true"
+        placeholder="Pilih..."
+    />
+    (Jika tidak ada yang dipilih, tidak ada input yang terkirim —
+    tangani default di controller, mis. $request->input('user_ids', [])).
 --}}
 
 @props([
@@ -37,12 +51,16 @@
     'required' => false,
     'disabled' => false,
     'emptyOption' => null,
-    'error' => null
+    'error' => null,
+    'multiple' => false
 ])
 
 @php
     $inputId = 'dropdown-' . Str::random(8);
     $selectedValue = old($name, $selected);
+    if ($multiple && !is_array($selectedValue)) {
+        $selectedValue = ($selectedValue === null || $selectedValue === '') ? [] : [$selectedValue];
+    }
 @endphp
 
 <div
@@ -54,6 +72,7 @@
             'raw' => $opt
         ])) }},
         selected: {{ Js::from($selectedValue) }},
+        multiple: {{ Js::from((bool) $multiple) }},
         placeholder: '{{ $placeholder }}',
         emptyOption: {{ Js::from($emptyOption) }}
     })"
@@ -70,8 +89,17 @@
     </label>
     @endif
 
-    {{-- Hidden input for form submission --}}
-    <input type="hidden" name="{{ $name }}" x-model="selectedValue">
+    {{-- Hidden input(s) for form submission --}}
+    <template x-if="multiple">
+        <span>
+            <template x-for="id in selectedValues" :key="id">
+                <input type="hidden" name="{{ $name }}[]" :value="id">
+            </template>
+        </span>
+    </template>
+    <template x-if="!multiple">
+        <input type="hidden" name="{{ $name }}" x-model="selectedValue">
+    </template>
 
     {{-- Dropdown trigger --}}
     <button
@@ -82,11 +110,32 @@
         class="relative w-full bg-white border border-gray-300 rounded-md shadow-sm pl-3 pr-9 py-2 text-left cursor-pointer focus:outline-none focus:ring-2 focus:ring-sp-primary/20 focus:border-sp-primary sm:text-sm {{ $disabled ? 'bg-gray-100 cursor-not-allowed' : '' }}"
         :class="{ 'ring-2 ring-sp-primary/20 border-sp-primary': open }"
     >
-        <span x-text="displayText" class="block truncate text-sm" :class="{ 'text-gray-400': !selectedValue }"></span>
+        <span x-text="displayText" class="block truncate text-sm" :class="{ 'text-gray-400': multiple ? selectedValues.length === 0 : !selectedValue }"></span>
         <span class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
             <i class="bi bi-chevron-down text-xs text-gray-400 transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
         </span>
     </button>
+
+    {{-- Chips pilihan (mode multiple) --}}
+    <template x-if="multiple">
+        <div x-show="selectedValues.length > 0" class="flex flex-wrap items-center gap-1.5 mt-2" x-cloak>
+            <template x-for="id in selectedValues" :key="'chip-' + id">
+                <span class="inline-flex items-center gap-1 pl-2.5 pr-1.5 py-1 text-xs font-semibold bg-teal-50 text-teal-800 border border-teal-200 rounded-full">
+                    <span x-text="labelFor(id)" class="max-w-40 truncate"></span>
+                    <span
+                        @click="removeChoice(id)"
+                        class="inline-flex items-center justify-center w-4 h-4 rounded-full hover:bg-teal-200 cursor-pointer"
+                        title="Hapus"
+                    >
+                        <i class="bi bi-x text-xs"></i>
+                    </span>
+                </span>
+            </template>
+            <button type="button" @click="clearChoices()" class="text-xs text-gray-400 hover:text-red-600 underline underline-offset-2 ml-1">
+                Hapus semua
+            </button>
+        </div>
+    </template>
 
     {{-- Dropdown panel - uses fixed positioning to escape overflow:hidden containers --}}
     <div
@@ -121,8 +170,8 @@
 
         {{-- Options list --}}
         <ul class="py-1">
-            {{-- Empty option --}}
-            <template x-if="emptyOption !== null">
+            {{-- Empty option (single-select only) --}}
+            <template x-if="emptyOption !== null && !multiple">
                 <li
                     @click="select(null)"
                     class="cursor-pointer select-none relative py-1.5 pl-3 pr-9 hover:bg-sp-hover"
@@ -138,13 +187,13 @@
             {{-- Filtered options --}}
             <template x-for="option in filteredOptions" :key="option.value">
                 <li
-                    @click="select(option.value)"
+                    @click="choose(option.value)"
                     class="cursor-pointer select-none relative py-1.5 pl-3 pr-9 hover:bg-sp-hover"
-                    :class="{ 'bg-sp-primary/10 text-sp-primary': selectedValue == option.value }"
+                    :class="{ 'bg-sp-primary/10 text-sp-primary': isChosen(option.value) }"
                 >
                     <span class="block truncate text-sm" x-text="option.label"></span>
                     <span x-show="option.group" class="text-xs text-gray-400 ml-1" x-text="'(' + option.group + ')'"></span>
-                    <span x-show="selectedValue == option.value" class="absolute inset-y-0 right-0 flex items-center pr-4 text-sp-primary">
+                    <span x-show="isChosen(option.value)" class="absolute inset-y-0 right-0 flex items-center pr-4 text-sp-primary">
                         <i class="bi bi-check text-sm"></i>
                     </span>
                 </li>
@@ -175,7 +224,9 @@ function searchableDropdown(config) {
         dropUp: false,
         dropdownPosition: { top: 0, left: 0, width: 0 },
         options: config.options || [],
-        selectedValue: config.selected,
+        selectedValue: config.multiple ? null : config.selected,
+        selectedValues: config.multiple ? (config.selected || []).map(v => Number(v)) : [],
+        multiple: config.multiple || false,
         placeholder: config.placeholder || 'Pilih...',
         emptyOption: config.emptyOption,
 
@@ -189,6 +240,11 @@ function searchableDropdown(config) {
         },
 
         get displayText() {
+            if (this.multiple) {
+                if (this.selectedValues.length === 0) return this.placeholder;
+                if (this.selectedValues.length === 1) return this.labelFor(this.selectedValues[0]);
+                return this.selectedValues.length + ' dipilih';
+            }
             if (this.selectedValue === null || this.selectedValue === '') {
                 return this.placeholder;
             }
@@ -237,7 +293,47 @@ function searchableDropdown(config) {
             this.close();
         },
 
+        isChosen(value) {
+            if (this.multiple) {
+                return this.selectedValues.includes(Number(value));
+            }
+            return this.selectedValue == value;
+        },
+
+        choose(value) {
+            if (this.multiple) {
+                const val = Number(value);
+                const idx = this.selectedValues.indexOf(val);
+                if (idx >= 0) {
+                    this.selectedValues.splice(idx, 1);
+                } else {
+                    this.selectedValues.push(val);
+                }
+                return;
+            }
+            this.select(value);
+        },
+
+        labelFor(id) {
+            const found = this.options.find(opt => Number(opt.value) === Number(id));
+            return found ? found.label : 'ID ' + id;
+        },
+
+        removeChoice(id) {
+            const idx = this.selectedValues.indexOf(Number(id));
+            if (idx >= 0) this.selectedValues.splice(idx, 1);
+        },
+
+        clearChoices() {
+            this.selectedValues = [];
+        },
+
         selectFirst() {
+            if (this.multiple) {
+                const first = this.filteredOptions.find(opt => !this.isChosen(opt.value));
+                if (first) this.choose(first.value);
+                return;
+            }
             if (this.filteredOptions.length > 0) {
                 this.select(this.filteredOptions[0].value);
             }

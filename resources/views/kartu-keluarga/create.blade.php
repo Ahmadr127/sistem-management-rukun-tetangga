@@ -30,6 +30,12 @@
             </div>
             <x-rt-address-selector :rts="$rts" :selectedRtId="old('rt_id', auth()->user()->rt_id)" :required="true" alamatName="alamat" :alamatValue="old('alamat')" />
             <p class="text-xs text-gray-500 -mt-2">Alamat jalan bebas edit. RW, Kelurahan, Kecamatan, Kota, Provinsi, Kode Pos otomatis dari master RT.</p>
+            <div>
+                <label class="block text-sm font-semibold mb-1">Koordinat Rumah <span class="text-gray-400 font-normal">(opsional)</span></label>
+                <x-koordinat-picker :latitude="old('latitude')" :longitude="old('longitude')" />
+                @error('latitude')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+                @error('longitude')<p class="text-xs text-red-600 mt-1">{{ $message }}</p>@enderror
+            </div>
             <div class="flex justify-end gap-2 pt-4"><a href="{{ route('kartu-keluarga.index') }}" class="px-4 py-2 border rounded-md text-sm">Batal</a><button type="submit" class="px-6 py-2 bg-sp-primary text-white rounded-md text-sm font-semibold">Simpan</button></div>
         </form>
     </x-card>
